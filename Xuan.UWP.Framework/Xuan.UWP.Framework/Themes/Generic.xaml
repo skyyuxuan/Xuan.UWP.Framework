@@ -1,0 +1,87 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Xuan.UWP.Framework.Controls">
+
+    <Style TargetType="local:RatingItem">
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:RatingItem">
+                    <Path   Fill="{TemplateBinding Background}"
+                            Stroke="{TemplateBinding BorderBrush}"
+                            StrokeThickness="{TemplateBinding StrokeThickness}"
+                            Stretch="Fill"
+                            Data="F1 M 5.0,0.0 L 6.1,3.5 L 9.8,3.5 L 6.8,5.6 L 7.9,9.0 L 5.0,6.9 L 2.1,9.1 L 3.2,5.6 L 0.2,3.5 L 3.9,3.5 L 5.0,0.0 Z"/> 
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style> 
+
+    <Style TargetType="local:Rating">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource AppBarItemForegroundThemeBrush}" />
+        <Setter Property="Width" Value="215" />
+        <Setter Property="Height" Value="43" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:Rating">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}" >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="DragHelperStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition To="Visible"
+                                                      GeneratedDuration="0:0:0.1" />
+                                    <VisualTransition To="Collapsed"
+                                                      GeneratedDuration="0:0:0.3" />
+                                </VisualStateGroup.Transitions>
+
+                                <VisualState x:Name="Collapsed" />
+
+                                <VisualState x:Name="Visible">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="DragBorderElement"
+                                                         Storyboard.TargetProperty="Opacity" To="1.0" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid x:Name="Root" Background="Transparent">
+                            <Border x:Name="DragBorderElement" 
+                                        Background="{TemplateBinding Background}" 
+                                        Width="35" Height="30" 
+                                        HorizontalAlignment="Left" 
+                                        VerticalAlignment="Top"
+                                        Opacity="0">
+                                <TextBlock x:Name="DragTextBlockElement" TextAlignment="Center" Text="3.5" />
+                            </Border>
+                            <Grid x:Name="UnfilledGridElement" />
+                            <Border x:Name="FilledClipElement">
+                                <Grid x:Name="FilledGridElement" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="FilledItemStyle">
+            <Setter.Value>
+                <Style TargetType="local:RatingItem">
+                    <Setter Property="Background" Value="Gray" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="UnfilledItemStyle">
+            <Setter.Value>
+                <Style TargetType="local:RatingItem">
+                    <Setter Property="Background" Value="LightGray" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

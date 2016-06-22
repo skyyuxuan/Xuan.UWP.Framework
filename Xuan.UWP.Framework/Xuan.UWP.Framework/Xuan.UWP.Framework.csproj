@@ -108,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\ParallaxBehavior.cs" />
+    <Compile Include="Controls\Rating.cs" />
+    <Compile Include="Controls\RatingItem.cs" />
     <Compile Include="Extensions\VisualTreeExtensions.cs" />
     <Compile Include="Network\HttpEngine.cs" />
     <Compile Include="Network\RequestMessage.cs" />
@@ -118,9 +120,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Composition\" />
-    <Folder Include="Controls\" />
     <Folder Include="Helpers\" />
     <Folder Include="Image\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
