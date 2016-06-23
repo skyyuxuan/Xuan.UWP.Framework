@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
-namespace Xuan.UWP.Framework.Image.Cache
+namespace Xuan.UWP.Framework.ImageLib.Cache
 {
     public abstract class StorageCacheBase
     {

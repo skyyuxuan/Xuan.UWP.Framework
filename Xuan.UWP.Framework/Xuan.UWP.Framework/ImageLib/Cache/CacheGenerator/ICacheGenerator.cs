@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xuan.UWP.Framework.Image.Cache
+namespace Xuan.UWP.Framework.ImageLib.Cache
 {
     public interface ICacheGenerator
     {

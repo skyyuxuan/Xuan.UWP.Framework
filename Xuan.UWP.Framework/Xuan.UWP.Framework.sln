@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xuan.UWP.Framework", "Xuan.UWP.Framework\Xuan.UWP.Framework.csproj", "{FF76AED5-E793-42D6-9313-A8864632EB12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xuan.UWP.Framework.TestApp", "Xuan.UWP.Framework.TestApp\Xuan.UWP.Framework.TestApp.csproj", "{2754867B-C835-4BE4-A3D1-F4472B83D000}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,26 @@ Global
 		{FF76AED5-E793-42D6-9313-A8864632EB12}.Release|x64.Build.0 = Release|x64
 		{FF76AED5-E793-42D6-9313-A8864632EB12}.Release|x86.ActiveCfg = Release|x86
 		{FF76AED5-E793-42D6-9313-A8864632EB12}.Release|x86.Build.0 = Release|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|ARM.ActiveCfg = Debug|ARM
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|ARM.Build.0 = Debug|ARM
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|ARM.Deploy.0 = Debug|ARM
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|x64.ActiveCfg = Debug|x64
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|x64.Build.0 = Debug|x64
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|x64.Deploy.0 = Debug|x64
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|x86.ActiveCfg = Debug|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|x86.Build.0 = Debug|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Debug|x86.Deploy.0 = Debug|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|Any CPU.ActiveCfg = Release|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|ARM.ActiveCfg = Release|ARM
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|ARM.Build.0 = Release|ARM
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|ARM.Deploy.0 = Release|ARM
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|x64.ActiveCfg = Release|x64
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|x64.Build.0 = Release|x64
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|x64.Deploy.0 = Release|x64
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|x86.ActiveCfg = Release|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|x86.Build.0 = Release|x86
+		{2754867B-C835-4BE4-A3D1-F4472B83D000}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
