@@ -31,7 +31,7 @@ namespace Xuan.UWP.Framework.TestApp
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            var stream = await ImageLib.ImageLoader.GetInstance.GetImageStream(@"http://ecx.images-amazon.com/images/I/512Pd6birKL.jpg", null, new System.Threading.CancellationToken());
+            var stream = await ImageLib.ImageLoader.GetInstance.GetImageStreamAsync(@"http://ecx.images-amazon.com/images/I/512Pd6birKL.jpg", null, new System.Threading.CancellationToken());
             var bit = new BitmapImage();
             await bit.SetSourceAsync(stream);
             img.Source = bit;

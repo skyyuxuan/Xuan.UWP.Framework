@@ -78,15 +78,15 @@ namespace Xuan.UWP.Framework.ImageLib
                     //TODO:need add download queue
                     RandomAccessStreamReference streamRef = RandomAccessStreamReference.CreateFromUri(new Uri(url));
                     randomStream = await streamRef.OpenReadAsync().AsTask(cancellationToken).ConfigureAwait(false);
-                    await Task.Factory.StartNew(() =>
+                    await Task.Factory.StartNew(async () =>
                     {
-                        _config.StorageCache.SaveAsync(url, randomStream).ContinueWith(task =>
-                        {
-                            if (task.IsFaulted || !task.Result)
-                            {
+                        await _config.StorageCache.SaveAsync(url, randomStream).ContinueWith(task =>
+                         {
+                             if (task.IsFaulted || !task.Result)
+                             {
 
-                            }
-                        });
+                             }
+                         });
                     }, default(CancellationToken), TaskCreationOptions.AttachedToParent, _sequentialScheduler);
                 }
             }
