@@ -108,8 +108,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\ParallaxBehavior.cs" />
-    <Compile Include="Controls\Rating.cs" />
-    <Compile Include="Controls\RatingItem.cs" />
+    <Compile Include="Controls\CircularBar\CircularBar.cs" />
+    <Compile Include="Controls\Rating\Rating.cs" />
+    <Compile Include="Controls\Rating\RatingItem.cs" />
+    <Compile Include="Controls\RichTextControl\HtmlTextBlock.cs" />
+    <Compile Include="Controls\RichTextControl\RichTextControl.cs" />
     <Compile Include="Extensions\VisualTreeExtensions.cs" />
     <Compile Include="ImageLib\Cache\CacheGenerator\ICacheGenerator.cs" />
     <Compile Include="ImageLib\Cache\CacheGenerator\SHA1CacheGenerator.cs" />

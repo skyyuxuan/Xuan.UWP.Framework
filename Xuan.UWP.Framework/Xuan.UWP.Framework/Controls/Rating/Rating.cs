@@ -12,23 +12,23 @@ using Windows.UI.Xaml.Media;
 
 namespace Xuan.UWP.Framework.Controls
 {
-    [TemplatePart(Name = Rating.FilledClipElement, Type = typeof(Border))]
-    [TemplatePart(Name = Rating.FilledGridElement, Type = typeof(Grid))]
-    [TemplatePart(Name = Rating.UnfilledGridElement, Type = typeof(Grid))]
-    [TemplatePart(Name = Rating.DragBorderElement, Type = typeof(Border))]
-    [TemplatePart(Name = Rating.DragTextBlockElement, Type = typeof(TextBlock))]
-    [TemplateVisualState(Name = Rating.DragHelperCollapsed, GroupName = Rating.DragHelperStates)]
-    [TemplateVisualState(Name = Rating.DragHelperVisible, GroupName = Rating.DragHelperStates)]
+    [TemplatePart(Name = Rating.FILLEDCLIPELEMENT, Type = typeof(Border))]
+    [TemplatePart(Name = Rating.FILLEDGRIDELEMENT, Type = typeof(Grid))]
+    [TemplatePart(Name = Rating.UNFILLEDGRIDELEMENT, Type = typeof(Grid))]
+    [TemplatePart(Name = Rating.DRAGBORDERELEMENT, Type = typeof(Border))]
+    [TemplatePart(Name = Rating.DRAGTEXTBLOCKELEMENT, Type = typeof(TextBlock))]
+    [TemplateVisualState(Name = Rating.DRAGHELPERCOLLAPSED, GroupName = Rating.DRAGHELPERSTATES)]
+    [TemplateVisualState(Name = Rating.DRAGHELPERVISIBLE, GroupName = Rating.DRAGHELPERSTATES)]
     public class Rating : Control
     {
-        private const string FilledClipElement = "FilledClipElement";
-        private const string FilledGridElement = "FilledGridElement";
-        private const string UnfilledGridElement = "UnfilledGridElement";
-        private const string DragBorderElement = "DragBorderElement";
-        private const string DragTextBlockElement = "DragTextBlockElement";
-        private const string DragHelperStates = "DragHelperStates";
-        private const string DragHelperCollapsed = "Collapsed";
-        private const string DragHelperVisible = "Visible";
+        private const string FILLEDCLIPELEMENT = "FilledClipElement";
+        private const string FILLEDGRIDELEMENT = "FilledGridElement";
+        private const string UNFILLEDGRIDELEMENT = "UnfilledGridElement";
+        private const string DRAGBORDERELEMENT = "DragBorderElement";
+        private const string DRAGTEXTBLOCKELEMENT = "DragTextBlockElement";
+        private const string DRAGHELPERSTATES = "DragHelperStates";
+        private const string DRAGHELPERCOLLAPSED = "Collapsed";
+        private const string DRAGHELPERVISIBLE = "Visible";
 
         private Border _filledClipElement;
         private Grid _filledGridElement;
@@ -109,11 +109,11 @@ namespace Xuan.UWP.Framework.Controls
 
         protected override void OnApplyTemplate()
         {
-            _filledClipElement = GetTemplateChild(FilledClipElement) as Border;
-            _filledGridElement = GetTemplateChild(FilledGridElement) as Grid;
-            _unfilledGridElement = GetTemplateChild(UnfilledGridElement) as Grid;
-            _dragBorderElement = GetTemplateChild(DragBorderElement) as Border;
-            _dragTextBlockElement = GetTemplateChild(DragTextBlockElement) as TextBlock;
+            _filledClipElement = GetTemplateChild(FILLEDCLIPELEMENT) as Border;
+            _filledGridElement = GetTemplateChild(FILLEDGRIDELEMENT) as Grid;
+            _unfilledGridElement = GetTemplateChild(UNFILLEDGRIDELEMENT) as Grid;
+            _dragBorderElement = GetTemplateChild(DRAGBORDERELEMENT) as Border;
+            _dragTextBlockElement = GetTemplateChild(DRAGTEXTBLOCKELEMENT) as TextBlock;
 
             if (_filledClipElement != null)
             {
@@ -141,11 +141,11 @@ namespace Xuan.UWP.Framework.Controls
 
             if (isVisible)
             {
-                VisualStateManager.GoToState(this, DragHelperVisible, true);
+                VisualStateManager.GoToState(this, DRAGHELPERVISIBLE, true);
             }
             else
             {
-                VisualStateManager.GoToState(this, DragHelperCollapsed, true);
+                VisualStateManager.GoToState(this, DRAGHELPERCOLLAPSED, true);
             }
         }
 
