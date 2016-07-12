@@ -109,10 +109,14 @@
   <ItemGroup>
     <Compile Include="Behaviors\ParallaxBehavior.cs" />
     <Compile Include="Controls\CircularBar\CircularBar.cs" />
+    <Compile Include="Controls\PathMenu\PathMenu.cs" />
+    <Compile Include="Controls\PathMenu\PathMenuItem.cs" />
     <Compile Include="Controls\Rating\Rating.cs" />
     <Compile Include="Controls\Rating\RatingItem.cs" />
     <Compile Include="Controls\RichTextControl\HtmlTextBlock.cs" />
     <Compile Include="Controls\RichTextControl\RichTextControl.cs" />
+    <Compile Include="Controls\Tile3D\Tile3D.cs" />
+    <Compile Include="Controls\Tile3D\Tile3DService.cs" />
     <Compile Include="Extensions\VisualTreeExtensions.cs" />
     <Compile Include="ImageLib\Cache\CacheGenerator\ICacheGenerator.cs" />
     <Compile Include="ImageLib\Cache\CacheGenerator\SHA1CacheGenerator.cs" />

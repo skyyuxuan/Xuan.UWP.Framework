@@ -14,13 +14,21 @@ namespace Xuan.UWP.Framework.Controls
 {
     [TemplatePart(Name = CircularBar.PathRoot, Type = typeof(Path))]
     [TemplatePart(Name = CircularBar.PathBack, Type = typeof(Path))]
-    public class CircularBar : ContentControl
+    public class CircularBar : Control
     {
         private const string PathRoot = "TC_PathRoot";
         private const string PathBack = "TC_PathBack";
 
         private Path pathRoot;
         private Path pathBack;
+
+        public CircularBar()
+        {
+            this.DefaultStyleKey = typeof(CircularBar);
+        }
+
+        #region DependencyProperty 
+
         public double Percentage
         {
             get { return (double)GetValue(PercentageProperty); }
@@ -87,7 +95,10 @@ namespace Xuan.UWP.Framework.Controls
             var circle = (CircularBar)sender;
             circle.RenderArc();
         }
+        #endregion
 
+        #region Methods 
+       
         public void RenderArc()
         {
             if (pathRoot == null)
@@ -123,7 +134,7 @@ namespace Xuan.UWP.Framework.Controls
             pathRoot.Data = pg;
             CalculatePathBackGeometry();//计算阴影部分
         }
-
+     
         private void CalculatePathBackGeometry()
         {
             if (pathBack == null)
@@ -178,10 +189,6 @@ namespace Xuan.UWP.Framework.Controls
             }
 
         }
-        public CircularBar()
-        {
-            this.DefaultStyleKey = typeof(CircularBar);
-        }
-
+        #endregion
     }
 }

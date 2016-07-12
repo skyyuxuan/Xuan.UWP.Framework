@@ -82,8 +82,7 @@
                 </Style>
             </Setter.Value>
         </Setter>
-    </Style>
-
+    </Style> 
 
     <Style TargetType="local:RichTextControl" >
         <Setter Property="Template">
@@ -120,9 +119,209 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:CircularBar">
                     <Grid>
-                        <Path x:Name="pathBack" Stroke="{TemplateBinding BackSegmentBrush}" StrokeThickness="{TemplateBinding StrokeThickness}" Opacity="{TemplateBinding BackOpacity}"/>
-                        <Path x:Name="pathRoot" Stroke="{TemplateBinding SegmentBrush}" StrokeThickness="{TemplateBinding StrokeThickness}"/>
+                        <Path x:Name="TC_PathBack" Stroke="{TemplateBinding BackSegmentBrush}" StrokeThickness="{TemplateBinding StrokeThickness}" Opacity="{TemplateBinding BackOpacity}"/>
+                        <Path x:Name="TC_PathRoot" Stroke="{TemplateBinding SegmentBrush}" StrokeThickness="{TemplateBinding StrokeThickness}"/>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style> 
+ 
+
+    <Style TargetType="local:Tile3D">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:Tile3D">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="TransitionStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="FlippedY">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="BackLayout"  Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="ContentLayout" Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootTransform" Storyboard.TargetProperty="RotationY">
+                                            <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="0.0" />
+                                            <SplineDoubleKeyFrame KeySpline=".5,.1,.5,.9" KeyTime="0:0:0.8" Value="90.0" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="BackLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="Visible"/>
+
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <!---->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="ContentLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.85" Value="Collapsed"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="FlippedYBack">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="BackLayout"  Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="ContentLayout" Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootTransform" Storyboard.TargetProperty="RotationY">
+                                            <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="90" />
+                                            <SplineDoubleKeyFrame KeySpline=".5,.1,.5,.9" KeyTime="0:0:0.8" Value="0" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="BackLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.85" Value="Collapsed"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <!---->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="ContentLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="Visible"/>
+
+                                        </ObjectAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="FlippedX">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="BackLayout"  Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="ContentLayout" Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootTransform" Storyboard.TargetProperty="RotationX">
+                                            <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="0.0" />
+                                            <SplineDoubleKeyFrame KeySpline=".5,.1,.5,.9" KeyTime="0:0:0.8" Value="90.0" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="BackLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="Visible"/>
+                                        </ObjectAnimationUsingKeyFrames>
+
+                                        <!---->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="ContentLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.85" Value="Collapsed"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="FlippedXBack">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="BackLayout"  Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="ContentLayout" Storyboard.TargetProperty="(Canvas.ZIndex)">
+                                            <DiscreteObjectKeyFrame Value="0" KeyTime="0" />
+                                            <DiscreteObjectKeyFrame Value="1" KeyTime="0:0:0.4" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootTransform" Storyboard.TargetProperty="RotationX">
+                                            <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="90.0" />
+                                            <SplineDoubleKeyFrame KeySpline=".5,.1,.5,.9" KeyTime="0:0:0.8" Value="0.0" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="BackLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.85" Value="Collapsed"/>
+                                        </ObjectAnimationUsingKeyFrames>
+
+                                        <!---->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                               Storyboard.TargetName="ContentLayout">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="Visible"/>
+
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid x:Name="LayoutRoot">
+                            <Grid.Transform3D>
+                                <CompositeTransform3D x:Name="RootTransform"/>
+                            </Grid.Transform3D>
+                            <ContentControl x:Name="ContentLayout" DataContext="{TemplateBinding DataContext}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                <ContentControl.Transform3D>
+                                    <CompositeTransform3D x:Name="ContentTransform"/>
+                                </ContentControl.Transform3D>
+                            </ContentControl>
+                            <ContentControl x:Name="BackLayout" DataContext="{TemplateBinding DataContext}" HorizontalContentAlignment="Stretch"
+                                            Visibility="Collapsed" ContentTemplate="{TemplateBinding BackContentTemplate}" VerticalContentAlignment="Stretch">
+                                <ContentControl.Transform3D>
+                                    <CompositeTransform3D x:Name="BackTransform"/>
+                                </ContentControl.Transform3D>
+                            </ContentControl>
+                        </Grid>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+  
+
+    <Style TargetType="local:PathMenu">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:PathMenu">
+                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <Grid x:Name="LayoutRoot"/>
+                        <local:PathMenuItem x:Name="MainPathMenu" Data="F1 M 22,12L 26,12L 26,22L 36,22L 36,26L 26,26L 26,36L 22,36L 22,26L 12,26L 12,22L 22,22L 22,12 Z" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                            BorderThickness="{TemplateBinding BorderThickness}" Foreground="{TemplateBinding Foreground}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:PathMenuItem">
+        <Setter Property="Padding" Value="12"/>
+        <Setter Property="Width" Value="48"/>
+        <Setter Property="Height" Value="48"/>
+        <Setter Property="CornerRadius" Value="1000"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:PathMenuItem">
+                    <Border x:Name="Layout" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="Layout"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="PointerOver"/>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Layout">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0.8"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="Layout"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Path Fill="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" Stretch="Uniform" Data="{TemplateBinding Data}"  />
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
