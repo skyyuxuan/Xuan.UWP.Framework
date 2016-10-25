@@ -13,6 +13,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Xuan.UWP.Framework.ImageLib.Config;
+using Xuan.UWP.Framework.Network;
 
 namespace Xuan.UWP.Framework.ImageLib
 {
@@ -22,10 +23,18 @@ namespace Xuan.UWP.Framework.ImageLib
         private TaskScheduler _sequentialScheduler;
         private static ImageLoader _instance;
         private static readonly object _lock = new object();
+        private object _concurrencyLock = new object();
 
+        private Dictionary<int, ConcurrentTask<IRandomAccessStream>> _concurrentTasks = new Dictionary<int, ConcurrentTask<IRandomAccessStream>>();
 
+        private class ConcurrentTask<T>
+        {
+            public Task<T> Task { get; set; }
+        }
         private ImageLoader()
-        { _sequentialScheduler = new LimitedConcurrencyLevelTaskScheduler(1, WorkItemPriority.Normal, true); }
+        {
+            _sequentialScheduler = new LimitedConcurrencyLevelTaskScheduler(1, WorkItemPriority.Normal, true);
+        }
 
         public static ImageLoader GetInstance
         {
@@ -48,13 +57,13 @@ namespace Xuan.UWP.Framework.ImageLib
         {
             this._config = config;
             return this;
-        }
-
+        } 
 
         public async Task<IRandomAccessStream> GetImageStreamAsync(string url, DisplayImageOptions options, CancellationToken cancellationToken)
         {
             CheckConfig();
             IRandomAccessStream randomStream = null;
+
 
             if (options == null)
             {
@@ -71,23 +80,50 @@ namespace Xuan.UWP.Framework.ImageLib
                 randomStream = await GetStreamFromUriAsync(new Uri(url), cancellationToken);
                 if (randomStream == null)
                 {
-                    randomStream = await LoadStreamFromCacheAsync(url, options);
-                }
-                if (randomStream == null)
-                {
-                    //TODO:need add download queue
-                    RandomAccessStreamReference streamRef = RandomAccessStreamReference.CreateFromUri(new Uri(url));
-                    randomStream = await streamRef.OpenReadAsync().AsTask(cancellationToken).ConfigureAwait(false);
-                    await Task.Factory.StartNew(async () =>
+                    ConcurrentTask<IRandomAccessStream> requestTask = null;
+                    int urlCode = url.GetHashCode();
+                    lock (_concurrencyLock)
                     {
-                        await _config.StorageCache.SaveAsync(url, randomStream).ContinueWith(task =>
-                         {
-                             if (task.IsFaulted || !task.Result)
-                             {
+                        if (_concurrentTasks.ContainsKey(urlCode))
+                        {
+                            requestTask = _concurrentTasks[urlCode];
+                        }
+                    }
+                    if (requestTask != null)
+                    {
+                        await requestTask.Task.ConfigureAwait(false);
+                        requestTask = null;
+                    }
+                    if (requestTask == null)
+                    {
+                        requestTask = new ConcurrentTask<IRandomAccessStream>()
+                        {
+                            Task = GetStreamFromCacheOrNetAsync(url, options)
+                        };
 
-                             }
-                         });
-                    }, default(CancellationToken), TaskCreationOptions.AttachedToParent, _sequentialScheduler);
+                        lock (_concurrencyLock)
+                        {
+                            _concurrentTasks.Add(urlCode, requestTask);
+                        }
+                    }
+                    try
+                    {
+                        randomStream = await requestTask.Task.ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                    }
+                    finally
+                    {
+                        lock (_concurrencyLock)
+                        {
+                            if (_concurrentTasks.ContainsKey(urlCode))
+                            {
+                                _concurrentTasks.Remove(urlCode);
+                            }
+                        }
+                    }
                 }
             }
             return randomStream;
@@ -100,6 +136,7 @@ namespace Xuan.UWP.Framework.ImageLib
                 throw new InvalidOperationException("ImageLoader configuration was not setted, please Initialize ImageLoader instance with  ImageLoaderConfiguration");
             }
         }
+
         protected virtual async Task<IRandomAccessStream> GetStreamFromUriAsync(Uri uri, CancellationToken cancellationToken)
         {
             switch (uri.Scheme)
@@ -133,26 +170,65 @@ namespace Xuan.UWP.Framework.ImageLib
                     }
             }
         }
-        protected virtual async Task<IRandomAccessStream> LoadStreamFromCacheAsync(string url, DisplayImageOptions options)
+        protected virtual async Task<IRandomAccessStream> GetStreamFromCacheOrNetAsync(string url, DisplayImageOptions options)
+        {
+            IRandomAccessStream randomStream = null;
+            randomStream = await GetStreamFromCacheAsync(url).ConfigureAwait(false);
+            if (randomStream == null)
+            {
+                randomStream = await GetStreamFromNetAsync(url).ConfigureAwait(false);
+                if (options.CacheOnStorage && randomStream != null)
+                {
+                    await Task.Factory.StartNew(async () =>
+                    {
+                        await _config.StorageCache.SaveAsync(url, randomStream).ContinueWith(task =>
+                        {
+                            if (task.IsFaulted || !task.Result)
+                            {
+
+                            }
+                        });
+                    }, default(CancellationToken), TaskCreationOptions.AttachedToParent, _sequentialScheduler);
+                }
+            }
+            return randomStream;
+        }
+        protected virtual async Task<IRandomAccessStream> GetStreamFromCacheAsync(string url)
         {
             try
             {
-                //文件存储中的缓存
-                if (options.CacheOnStorage)
+                if (await _config.StorageCache.IsCacheExists(url))
                 {
-                    if (await _config.StorageCache.IsCacheExists(url))
+                    return await _config.StorageCache.GetAsync(url);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return null;
+        }
+        protected virtual async Task<IRandomAccessStream> GetStreamFromNetAsync(string url)
+        {
+            IRandomAccessStream randomStream = null;
+            using (var engine = new HttpEngine())
+            {
+                var request = new RequestMessage.Builder()
+                    .Method("GET")
+                    .Url(url)
+                    .Build();
+                using (var response = await engine.SendRequestAsync(request).ConfigureAwait(false))
+                {
+                    if (response != null)
                     {
-                        return await _config.StorageCache.GetAsync(url);
+                        randomStream = new InMemoryRandomAccessStream();
+                        await response.Content.WriteToStreamAsync(randomStream).AsTask().ConfigureAwait(false);
+                        randomStream.Seek(0);
                     }
                 }
 
             }
-            catch (Exception e)
-            {
-
-            }
-            return null;
+            return randomStream;
         }
-
     }
 }
