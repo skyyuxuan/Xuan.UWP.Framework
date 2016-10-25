@@ -178,7 +178,7 @@ namespace Xuan.UWP.Framework.ImageLib
             {
                 randomStream = await GetStreamFromNetAsync(url).ConfigureAwait(false);
                 if (options.CacheOnStorage && randomStream != null)
-                {
+                { 
                     await Task.Factory.StartNew(async () =>
                     {
                         await _config.StorageCache.SaveAsync(url, randomStream).ContinueWith(task =>
