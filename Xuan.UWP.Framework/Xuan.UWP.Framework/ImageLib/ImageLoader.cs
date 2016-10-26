@@ -63,8 +63,6 @@ namespace Xuan.UWP.Framework.ImageLib
         {
             CheckConfig();
             IRandomAccessStream randomStream = null;
-
-
             if (options == null)
             {
                 options = new DisplayImageOptions.Builder()
@@ -103,6 +101,10 @@ namespace Xuan.UWP.Framework.ImageLib
 
                         lock (_concurrencyLock)
                         {
+                            if (_concurrentTasks.ContainsKey(urlCode))
+                            {
+                                _concurrentTasks.Remove(urlCode);
+                            }
                             _concurrentTasks.Add(urlCode, requestTask);
                         }
                     }
@@ -112,6 +114,13 @@ namespace Xuan.UWP.Framework.ImageLib
                     }
                     catch (Exception ex)
                     {
+                        lock (_concurrencyLock)
+                        {
+                            if (_concurrentTasks.ContainsKey(urlCode))
+                            {
+                                _concurrentTasks.Remove(urlCode);
+                            }
+                        }
                         System.Diagnostics.Debug.WriteLine(ex.Message);
                     }
                     finally
@@ -178,17 +187,8 @@ namespace Xuan.UWP.Framework.ImageLib
             {
                 randomStream = await GetStreamFromNetAsync(url).ConfigureAwait(false);
                 if (options.CacheOnStorage && randomStream != null)
-                { 
-                    await Task.Factory.StartNew(async () =>
-                    {
-                        await _config.StorageCache.SaveAsync(url, randomStream).ContinueWith(task =>
-                        {
-                            if (task.IsFaulted || !task.Result)
-                            {
-
-                            }
-                        });
-                    }, default(CancellationToken), TaskCreationOptions.AttachedToParent, _sequentialScheduler);
+                {
+                    await _config.StorageCache.SaveAsync(url, randomStream).ConfigureAwait(false);
                 }
             }
             return randomStream;

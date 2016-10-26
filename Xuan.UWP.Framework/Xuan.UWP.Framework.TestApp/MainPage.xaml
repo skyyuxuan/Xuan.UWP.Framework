@@ -5,9 +5,18 @@
     xmlns:local="using:Xuan.UWP.Framework.TestApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:imageloader="using:Xuan.UWP.Framework.ImageLib" 
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Image x:Name="img"/>
-    </Grid>
+    <Page.Resources>
+        <DataTemplate x:Key="SimpleImageDataTemplate">
+            <Grid>
+                <Image imageloader:ImageLoader.Source="{Binding Url}" Width="200" Height="200"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <ListView x:Name="listView" ItemTemplate="{StaticResource SimpleImageDataTemplate}">
+
+    </ListView>
 </Page>

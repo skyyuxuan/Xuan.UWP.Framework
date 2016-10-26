@@ -45,7 +45,7 @@ namespace Xuan.UWP.Framework.ImageLib.Cache
                 }
                 finally
                 {
-                    ssFlile.Release();
+                    ssFlile.Dispose();
                     RemoveConcurrentLocker(fullFilePath);
                 }
                 return null;
@@ -108,7 +108,7 @@ namespace Xuan.UWP.Framework.ImageLib.Cache
         }
 
         public override async Task<bool> SaveAsync(string url, IRandomAccessStream cacheStream)
-        {
+        { 
             var fullFilePath = GetFullPath(_cacheFileNameGenerator.GeneratorName(url));
             using (var ssFlile = _dicConcurrentLocker.GetOrAdd(fullFilePath, new SemaphoreSlim(1)))
             {
@@ -118,6 +118,7 @@ namespace Xuan.UWP.Framework.ImageLib.Cache
                     var storageFile = await _baseFolder.CreateFileAsync(fullFilePath, CreationCollisionOption.ReplaceExisting);
                     if (storageFile != null)
                     {
+                        cacheStream.Seek(0);
                         await FileIO.WriteBufferAsync(storageFile, StreamUtil.RandomStreamToBuffer(cacheStream));
                         return true;
                     }
