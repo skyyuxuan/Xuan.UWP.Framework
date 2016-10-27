@@ -60,7 +60,7 @@ namespace Xuan.UWP.Framework.ImageLib.Cache
                 try
                 {
                     await ssFlile.WaitAsync();
-                    return await _baseFolder.CreateFileAsync(fullFilePath, CreationCollisionOption.ReplaceExisting);
+                    return await _baseFolder.GetFileAsync(fullFilePath);
                 }
                 catch (Exception ex)
                 {

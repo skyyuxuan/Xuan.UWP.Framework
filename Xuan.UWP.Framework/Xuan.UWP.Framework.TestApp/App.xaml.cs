@@ -32,7 +32,8 @@ namespace Xuan.UWP.Framework.TestApp
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             var configuration = new ImageLib.Config.ImageLoaderConfiguration.Builder()
-                                 .StorageCache(new ImageLib.Cache.StorageCache(ApplicationData.Current.LocalCacheFolder, "test", new ImageLib.Cache.CacheGenerator.SHA1CacheGenerator(), 0))
+                                 .StorageCache(new ImageLib.Cache.StorageCache(ApplicationData.Current.LocalCacheFolder,
+                                 "test", new ImageLib.Cache.CacheGenerator.SHA1CacheGenerator(), 0))
                                  .Build();
             ImageLib.ImageLoader.GetInstance.InitConfig(configuration);
         }

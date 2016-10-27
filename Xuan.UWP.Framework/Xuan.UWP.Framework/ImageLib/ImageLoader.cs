@@ -57,7 +57,7 @@ namespace Xuan.UWP.Framework.ImageLib
         {
             this._config = config;
             return this;
-        } 
+        }
 
         public async Task<IRandomAccessStream> GetImageStreamAsync(string url, DisplayImageOptions options, CancellationToken cancellationToken)
         {
@@ -136,6 +136,22 @@ namespace Xuan.UWP.Framework.ImageLib
                 }
             }
             return randomStream;
+        }
+
+        public async Task<StorageFile> GetStorageFileFromCache(string url)
+        {
+            try
+            {
+                if (await _config.StorageCache.IsCacheExists(url))
+                {
+                    return await _config.StorageCache.GetFileAsync(url);
+                }
+                return null;
+            }
+            catch
+            {
+                throw new Exception("LoadImageStreamFromCache error");
+            }
         }
 
         protected virtual void CheckConfig()
