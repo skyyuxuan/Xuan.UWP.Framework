@@ -246,3 +246,5 @@ ModelManifest.xml
 
 # Others
 *.pfx
+*.exe
+*.nuspec

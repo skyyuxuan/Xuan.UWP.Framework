@@ -202,7 +202,7 @@ namespace Xuan.UWP.Framework.ImageLib
             if (randomStream == null)
             {
                 randomStream = await GetStreamFromNetAsync(url).ConfigureAwait(false);
-                if (options.CacheOnStorage && randomStream != null)
+                if (options.CacheOnStorage && randomStream != null && randomStream.Size > 0)
                 {
                     await _config.StorageCache.SaveAsync(url, randomStream).ConfigureAwait(false);
                 }
