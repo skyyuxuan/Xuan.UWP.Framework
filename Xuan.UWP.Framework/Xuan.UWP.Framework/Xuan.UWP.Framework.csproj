@@ -113,6 +113,9 @@
     <Compile Include="Behaviors\ParallaxBehavior.cs" />
     <Compile Include="Common\DataModelBase.cs" />
     <Compile Include="Controls\CircularBar\CircularBar.cs" />
+    <Compile Include="Controls\ImageEditor\ImageEditor.xaml.cs">
+      <DependentUpon>ImageEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PathMenu\PathMenu.cs" />
     <Compile Include="Controls\PathMenu\PathMenuItem.cs" />
     <Compile Include="Controls\Rating\Rating.cs" />
@@ -146,6 +149,10 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\ImageEditor\ImageEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
