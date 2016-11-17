@@ -16,7 +16,8 @@ namespace Xuan.UWP.Framework.ImageLib.Cache
         protected virtual ICacheGenerator _cacheFileNameGenerator { get; set; }
 
 
-        public abstract Task<bool> SaveAsync(string url, IRandomAccessStream cacheStream);
+        public abstract Task<bool> SaveAsync(string url, IRandomAccessStream cacheStream); 
+        public abstract Task<bool> SaveAsync(StorageFile file);
         public abstract Task<IRandomAccessStream> GetAsync(string url);
         public abstract Task<StorageFile> GetFileAsync(string url);
         public abstract Task<bool> Remove(string url);

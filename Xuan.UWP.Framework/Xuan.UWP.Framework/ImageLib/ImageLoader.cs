@@ -26,6 +26,7 @@ namespace Xuan.UWP.Framework.ImageLib
         private object _concurrencyLock = new object();
 
         private Dictionary<int, ConcurrentTask<IRandomAccessStream>> _concurrentTasks = new Dictionary<int, ConcurrentTask<IRandomAccessStream>>();
+        private Dictionary<int, ConcurrentTask<bool>> _concurrentCacheTasks = new Dictionary<int, ConcurrentTask<bool>>();
 
         private class ConcurrentTask<T>
         {
@@ -138,6 +139,68 @@ namespace Xuan.UWP.Framework.ImageLib
             return randomStream;
         }
 
+        public async Task<bool> CacheImageAsync(StorageFile file, DisplayImageOptions options, CancellationToken cancellationToken)
+        {
+            CheckConfig();
+            bool result = false;
+            ConcurrentTask<bool> requestTask = null;
+            int urlCode = file.Path.GetHashCode();
+            lock (_concurrencyLock)
+            {
+                if (_concurrentCacheTasks.ContainsKey(urlCode))
+                {
+                    requestTask = _concurrentCacheTasks[urlCode];
+                }
+            }
+            if (requestTask != null)
+            {
+                await requestTask.Task.ConfigureAwait(false);
+                requestTask = null;
+            }
+            if (requestTask == null)
+            {
+                requestTask = new ConcurrentTask<bool>()
+                {
+                    Task = SaveCacheAsync(file)
+                };
+
+                lock (_concurrencyLock)
+                {
+                    if (_concurrentCacheTasks.ContainsKey(urlCode))
+                    {
+                        _concurrentCacheTasks.Remove(urlCode);
+                    }
+                    _concurrentCacheTasks.Add(urlCode, requestTask);
+                }
+            }
+            try
+            {
+                result = await requestTask.Task.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                lock (_concurrencyLock)
+                {
+                    if (_concurrentCacheTasks.ContainsKey(urlCode))
+                    {
+                        _concurrentCacheTasks.Remove(urlCode);
+                    }
+                }
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                lock (_concurrencyLock)
+                {
+                    if (_concurrentCacheTasks.ContainsKey(urlCode))
+                    {
+                        _concurrentCacheTasks.Remove(urlCode);
+                    }
+                }
+            }
+            return result;
+        }
+
         public async Task<StorageFile> GetStorageFileFromCache(string url)
         {
             try
@@ -184,11 +247,11 @@ namespace Xuan.UWP.Framework.ImageLib
                         }
                         throw new Exception("Resource not found");
                     }
-                case "file":
-                    {
-                        var file = await StorageFile.GetFileFromPathAsync(uri.LocalPath);
-                        return await file.OpenAsync(FileAccessMode.Read).AsTask(cancellationToken).ConfigureAwait(false);
-                    }
+                //case "file":
+                //    {
+                //        var file = await StorageFile.GetFileFromPathAsync(uri.LocalPath);
+                //        return await file.OpenAsync(FileAccessMode.Read).AsTask(cancellationToken).ConfigureAwait(false);
+                //    }
                 default:
                     {
                         return null;
@@ -223,6 +286,28 @@ namespace Xuan.UWP.Framework.ImageLib
                 throw e;
             }
             return null;
+        }
+
+        protected virtual async Task<bool> SaveCacheAsync(StorageFile file)
+        {
+            bool result = false;
+            try
+            {
+                if (!await _config.StorageCache.IsCacheExists(file.Path))
+                {
+                    return await _config.StorageCache.SaveAsync(file);
+                }
+                else
+                {
+                    result = true;
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return result;
         }
         protected virtual async Task<IRandomAccessStream> GetStreamFromNetAsync(string url)
         {

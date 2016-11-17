@@ -107,8 +107,41 @@ namespace Xuan.UWP.Framework.ImageLib.Cache
             }
         }
 
+        public override async Task<bool> SaveAsync(StorageFile file)
+        {
+            var fullFilePath = GetFullPath(_cacheFileNameGenerator.GeneratorName(file.Path));
+            using (var ssFlile = _dicConcurrentLocker.GetOrAdd(fullFilePath, new SemaphoreSlim(1)))
+            {
+                try
+                {
+                    await ssFlile.WaitAsync();
+                    using (var cacheStream = await file.OpenAsync(FileAccessMode.Read))
+                    {
+                        var storageFile = await _baseFolder.CreateFileAsync(fullFilePath, CreationCollisionOption.ReplaceExisting);
+                        if (storageFile != null)
+                        {
+                            cacheStream.Seek(0);
+                            await FileIO.WriteBufferAsync(storageFile, StreamUtil.RandomStreamToBuffer(cacheStream));
+                            return true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ssFlile.Release();
+                    RemoveConcurrentLocker(fullFilePath);
+                }
+                finally
+                {
+                    ssFlile.Release();
+                    RemoveConcurrentLocker(fullFilePath);
+                }
+            }
+            return false;
+        }
+
         public override async Task<bool> SaveAsync(string url, IRandomAccessStream cacheStream)
-        { 
+        {
             var fullFilePath = GetFullPath(_cacheFileNameGenerator.GeneratorName(url));
             using (var ssFlile = _dicConcurrentLocker.GetOrAdd(fullFilePath, new SemaphoreSlim(1)))
             {
