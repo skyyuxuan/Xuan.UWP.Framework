@@ -10,13 +10,15 @@
 
     <Page.Resources>
         <DataTemplate x:Key="SimpleImageDataTemplate">
-            <Grid>
+            <Grid> 
                 <Image imageloader:ImageLoader.Source="{Binding Url}" Width="200" Height="200"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>
+    <Grid>
+        <Image x:Name="img" imageloader:ImageLoader.Source="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png"/>
 
-    <ListView x:Name="listView" ItemTemplate="{StaticResource SimpleImageDataTemplate}">
+        <ListView x:Name="listView" ItemTemplate="{StaticResource SimpleImageDataTemplate}"/>
+    </Grid> 
 
-    </ListView>
 </Page>
