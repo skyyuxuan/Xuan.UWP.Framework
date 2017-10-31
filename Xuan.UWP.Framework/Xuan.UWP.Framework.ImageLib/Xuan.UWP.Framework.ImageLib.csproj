@@ -108,13 +108,17 @@
   <ItemGroup>
     <Compile Include="Cache\CacheGenerator\ICacheGenerator.cs" />
     <Compile Include="Cache\CacheGenerator\SHA1CacheGenerator.cs" />
-    <Compile Include="Cache\Compress\CompressOptions.cs" />
-    <Compile Include="Cache\Compress\ImageCompress.cs" />
+    <Compile Include="Compress\CompressOptions.cs" />
+    <Compile Include="Compress\ImageCompress.cs" />
     <Compile Include="Cache\StorageCache\StorageCache.cs" />
     <Compile Include="Config\DisplayImageOptions.cs" />
     <Compile Include="Config\ImageLoaderConfiguration.cs" />
     <Compile Include="Config\ImageLoadingDelegate.cs" />
     <Compile Include="Config\LimitedConcurrencyLevelTaskScheduler.cs" />
+    <Compile Include="Editor\IDrawEditor.cs" />
+    <Compile Include="Editor\ImageEditor.xaml.cs">
+      <DependentUpon>ImageEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImageLoader.cs" />
     <Compile Include="ImageLoader_Attached.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,12 +129,21 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Win2D.uwp">
+      <Version>1.21.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xuan.UWP.Framework\Xuan.UWP.Framework.csproj">
       <Project>{ff76aed5-e793-42d6-9313-a8864632eb12}</Project>
       <Name>Xuan.UWP.Framework</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Editor\ImageEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
