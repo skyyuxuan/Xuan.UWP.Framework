@@ -7,19 +7,24 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Xuan.UWP.Framework.Controls {
-    public class RatingItem : ContentControl {
-        public RatingItem() {
+namespace Xuan.UWP.Framework.Controls
+{
+    public class RatingItem : ContentControl
+    {
+        public RatingItem()
+        {
             DefaultStyleKey = typeof(RatingItem);
         }
-        public double StrokeThickness {
+        public double StrokeThickness
+        {
             get { return (double)GetValue(StrokeThicknessProperty); }
             set { SetValue(StrokeThicknessProperty, value); }
         }
         public static readonly DependencyProperty StrokeThicknessProperty =
           DependencyProperty.Register("StrokeThickness", typeof(double), typeof(RatingItem), new PropertyMetadata(0d));
 
-        public Geometry PathData {
+        public Geometry PathData
+        {
             get { return (Geometry)GetValue(PathDataProperty); }
             set { SetValue(PathDataProperty, value); }
         }

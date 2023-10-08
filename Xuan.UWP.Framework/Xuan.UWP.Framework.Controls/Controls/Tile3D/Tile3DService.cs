@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
-namespace Xuan.UWP.Framework.Controls {
-    internal static class Tile3DService {
+namespace Xuan.UWP.Framework.Controls
+{
+    internal static class Tile3DService
+    {
         private static DispatcherTimer timer = new DispatcherTimer();
         private static Random probabilisticBehaviorSelector = new Random();
         private const int waitingPipelineSteps = 3;
@@ -18,18 +20,21 @@ namespace Xuan.UWP.Framework.Controls {
         private static List<WeakReference> frozenPool = new List<WeakReference>();
         private static List<WeakReference> stalledPipeline = new List<WeakReference>();
 
-        static Tile3DService() {
+        static Tile3DService()
+        {
             timer.Tick += OnTimerTick;
         }
 
-        public static void FreezeTile3D(Tile3D tile) {
+        public static void FreezeTile3D(Tile3D tile)
+        {
             WeakReference wref = new WeakReference(tile, TrackResurrection);
             AddReferenceToFrozenPool(wref);
             RemoveReferenceFromEnabledPool(wref);
             RemoveReferenceFromStalledPipeline(wref);
         }
 
-        public static void UnfreezeTile3D(Tile3D tile) {
+        public static void UnfreezeTile3D(Tile3D tile)
+        {
             WeakReference wref = new WeakReference(tile, TrackResurrection);
             AddReferenceToEnabledPool(wref);
             RemoveReferenceFromFrozenPool(wref);
@@ -38,45 +43,57 @@ namespace Xuan.UWP.Framework.Controls {
             RestartTimer();
         }
 
-        internal static void InitializeReference(Tile3D tile) {
+        internal static void InitializeReference(Tile3D tile)
+        {
             WeakReference wref = new WeakReference(tile, TrackResurrection);
-            if (tile.IsFrozen) {
+            if (tile.IsFrozen)
+            {
                 AddReferenceToFrozenPool(wref);
             }
-            else {
+            else
+            {
                 AddReferenceToEnabledPool(wref);
             }
 
             RestartTimer();
         }
 
-        internal static void FinalizeReference(Tile3D tile) {
+        internal static void FinalizeReference(Tile3D tile)
+        {
             WeakReference wref = new WeakReference(tile, TrackResurrection);
             Tile3DService.RemoveReferenceFromEnabledPool(wref);
             Tile3DService.RemoveReferenceFromFrozenPool(wref);
             Tile3DService.RemoveReferenceFromStalledPipeline(wref);
         }
-        private static void OnTimerTick(object sender, object e) {
+        private static void OnTimerTick(object sender, object e)
+        {
             timer.Stop();
 
-            for (int i = 0; i < stalledPipeline.Count; i++) {
-                if ((stalledPipeline[i].Target as Tile3D)._stallingCounter-- == 0) {
+            for (int i = 0; i < stalledPipeline.Count; i++)
+            {
+                if ((stalledPipeline[i].Target as Tile3D)._stallingCounter-- == 0)
+                {
                     AddReferenceToEnabledPool(stalledPipeline[i]);
                     RemoveReferenceFromStalledPipeline(stalledPipeline[i]);
                     i--;
                 }
             }
 
-            if (enabledPool.Count > 0) {
-                for (int j = 0; j < numberOfSimultaneousAnimations; j++) {
+            if (enabledPool.Count > 0)
+            {
+                for (int j = 0; j < numberOfSimultaneousAnimations; j++)
+                {
                     int index = probabilisticBehaviorSelector.Next(enabledPool.Count);
 
-                    switch ((enabledPool[index].Target as Tile3D).State) {
+                    switch ((enabledPool[index].Target as Tile3D).State)
+                    {
                         case Tile3DStates.FlippedXBack:
-                            if (probabilisticBehaviorSelector.Next(2) == 0) {
+                            if (probabilisticBehaviorSelector.Next(2) == 0)
+                            {
                                 (enabledPool[index].Target as Tile3D).State = Tile3DStates.FlippedX;
                             }
-                            else {
+                            else
+                            {
                                 (enabledPool[index].Target as Tile3D).State = Tile3DStates.FlippedY;
                             }
                             break;
@@ -87,10 +104,12 @@ namespace Xuan.UWP.Framework.Controls {
                             (enabledPool[index].Target as Tile3D).State = Tile3DStates.FlippedYBack;
                             break;
                         case Tile3DStates.FlippedYBack:
-                            if (probabilisticBehaviorSelector.Next(2) == 0) {
+                            if (probabilisticBehaviorSelector.Next(2) == 0)
+                            {
                                 (enabledPool[index].Target as Tile3D).State = Tile3DStates.FlippedY;
                             }
-                            else {
+                            else
+                            {
                                 (enabledPool[index].Target as Tile3D).State = Tile3DStates.FlippedX;
                             }
                             break;
@@ -101,7 +120,8 @@ namespace Xuan.UWP.Framework.Controls {
                     RemoveReferenceFromEnabledPool(enabledPool[index]);
                 }
             }
-            else if (stalledPipeline.Count == 0) {
+            else if (stalledPipeline.Count == 0)
+            {
                 return;
             }
 
@@ -110,50 +130,67 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
 
-        private static void RestartTimer() {
-            if (!timer.IsEnabled) {
+        private static void RestartTimer()
+        {
+            if (!timer.IsEnabled)
+            {
                 timer.Interval = TimeSpan.FromMilliseconds(2500);
                 timer.Start();
             }
         }
 
-        private static void AddReferenceToStalledPipeline(WeakReference tile) {
-            if (!ContainsTarget(stalledPipeline, tile.Target)) {
+        private static void AddReferenceToStalledPipeline(WeakReference tile)
+        {
+            if (!ContainsTarget(stalledPipeline, tile.Target))
+            {
                 stalledPipeline.Add(tile);
             }
         }
 
-        private static void RemoveReferenceFromEnabledPool(WeakReference tile) {
+        private static void RemoveReferenceFromEnabledPool(WeakReference tile)
+        {
             RemoveTarget(enabledPool, tile.Target);
         }
-        private static void AddReferenceToEnabledPool(WeakReference tile) {
-            if (!ContainsTarget(enabledPool, tile.Target)) {
+        private static void AddReferenceToEnabledPool(WeakReference tile)
+        {
+            if (!ContainsTarget(enabledPool, tile.Target))
+            {
                 enabledPool.Add(tile);
             }
         }
 
-        private static void RemoveReferenceFromStalledPipeline(WeakReference tile) {
+        private static void RemoveReferenceFromStalledPipeline(WeakReference tile)
+        {
             RemoveTarget(stalledPipeline, tile.Target);
         }
-        private static void AddReferenceToFrozenPool(WeakReference tile) {
-            if (!ContainsTarget(frozenPool, tile.Target)) {
+        private static void AddReferenceToFrozenPool(WeakReference tile)
+        {
+            if (!ContainsTarget(frozenPool, tile.Target))
+            {
                 frozenPool.Add(tile);
             }
         }
-        private static void RemoveReferenceFromFrozenPool(WeakReference tile) {
+        private static void RemoveReferenceFromFrozenPool(WeakReference tile)
+        {
             RemoveTarget(frozenPool, tile.Target);
         }
-        private static bool ContainsTarget(List<WeakReference> list, Object target) {
-            for (int i = 0; i < list.Count; i++) {
-                if (list[i].Target == target) {
+        private static bool ContainsTarget(List<WeakReference> list, Object target)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Target == target)
+                {
                     return true;
                 }
             }
             return false;
         }
-        private static void RemoveTarget(List<WeakReference> list, Object target) {
-            for (int i = 0; i < list.Count; i++) {
-                if (list[i].Target == target) {
+        private static void RemoveTarget(List<WeakReference> list, Object target)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Target == target)
+                {
                     list.RemoveAt(i);
                     return;
                 }
@@ -161,7 +198,8 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
     }
-    internal enum Tile3DStates {
+    internal enum Tile3DStates
+    {
         FlippedY,
         FlippedYBack,
         FlippedX,

@@ -7,9 +7,12 @@ using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
 
-namespace Xuan.UWP.Framework.Utils {
-    public class SH1Util {
-        public static string ComputeHash(string source) {
+namespace Xuan.UWP.Framework.Utils
+{
+    public class SH1Util
+    {
+        public static string ComputeHash(string source)
+        {
             HashAlgorithmProvider sha1 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
             byte[] bytes = Encoding.UTF8.GetBytes(source);
             IBuffer bytesBuffer = CryptographicBuffer.CreateFromByteArray(bytes);

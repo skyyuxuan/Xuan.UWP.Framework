@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xuan.UWP.Framework.Network {
-    public class ResponseMessage<T> {
+namespace Xuan.UWP.Framework.Network
+{
+    public class ResponseMessage<T>
+    {
         public bool IsSuccess { get; set; }
         public ResponseCode Code { get; set; }
         public T Result { get; set; }
@@ -14,7 +16,8 @@ namespace Xuan.UWP.Framework.Network {
         public object Tag { get; set; }
     }
 
-    public enum ResponseCode {
+    public enum ResponseCode
+    {
         /// <summary>
         /// 参数错误.
         /// </summary>

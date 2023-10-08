@@ -15,10 +15,12 @@ using Windows.UI.Xaml.Media.Imaging;
 using Xuan.UWP.Framework.ImageLib.Config;
 using Xuan.UWP.Framework.Network;
 
-namespace Xuan.UWP.Framework.ImageLib {
+namespace Xuan.UWP.Framework.ImageLib
+{
 
-    public partial class ImageLoader {
-        private TaskScheduler _sequentialScheduler;
+    public partial class ImageLoader
+    {
+        //private TaskScheduler _sequentialScheduler;
         private static ImageLoader _instance;
         private static readonly object _lock = new object();
         private object _concurrencyLock = new object();
@@ -26,17 +28,23 @@ namespace Xuan.UWP.Framework.ImageLib {
         private Dictionary<int, ConcurrentTask<IRandomAccessStream>> _concurrentTasks = new Dictionary<int, ConcurrentTask<IRandomAccessStream>>();
         private Dictionary<int, ConcurrentTask<bool>> _concurrentCacheTasks = new Dictionary<int, ConcurrentTask<bool>>();
 
-        private class ConcurrentTask<T> {
+        private class ConcurrentTask<T>
+        {
             public Task<T> Task { get; set; }
         }
-        private ImageLoader() {
-            _sequentialScheduler = new LimitedConcurrencyLevelTaskScheduler(1, WorkItemPriority.Normal, true);
+        private ImageLoader()
+        {
+            //_sequentialScheduler = new LimitedConcurrencyLevelTaskScheduler(1, WorkItemPriority.Normal, true);
         }
 
-        public static ImageLoader GetInstance {
-            get {
-                if (_instance == null) {
-                    lock (_lock) {
+        public static ImageLoader GetInstance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_lock)
+                    {
                         if (_instance == null) _instance = new ImageLoader();
                     }
                 }
@@ -46,61 +54,82 @@ namespace Xuan.UWP.Framework.ImageLib {
 
 
         protected ImageLoaderConfiguration _config;
-        public ImageLoader InitConfig(ImageLoaderConfiguration config) {
+        public ImageLoader InitConfig(ImageLoaderConfiguration config)
+        {
             this._config = config;
             return this;
         }
 
-        public async Task<IRandomAccessStream> GetImageStreamAsync(string url, DisplayImageOptions options, CancellationToken cancellationToken) {
+        public async Task<IRandomAccessStream> GetImageStreamAsync(string url, DisplayImageOptions options, CancellationToken cancellationToken)
+        {
             CheckConfig();
             IRandomAccessStream randomStream = null;
-            if (options == null) {
+            if (options == null)
+            {
                 options = new DisplayImageOptions.Builder()
                     .CacheOnStorage(true)
                     .Build();
             }
-            if (string.IsNullOrEmpty(url)) {
+            if (string.IsNullOrEmpty(url))
+            {
 
             }
-            else {
+            else
+            {
                 randomStream = await GetStreamFromUriAsync(new Uri(url), cancellationToken);
-                if (randomStream == null) {
+                if (randomStream == null)
+                {
                     ConcurrentTask<IRandomAccessStream> requestTask = null;
                     int urlCode = url.GetHashCode();
-                    lock (_concurrencyLock) {
-                        if (_concurrentTasks.ContainsKey(urlCode)) {
+                    lock (_concurrencyLock)
+                    {
+                        if (_concurrentTasks.ContainsKey(urlCode))
+                        {
                             requestTask = _concurrentTasks[urlCode];
                         }
                     }
-                    if (requestTask != null) {
+                    if (requestTask != null)
+                    {
                         await requestTask.Task.ConfigureAwait(false);
                         requestTask = null;
                     }
-                    if (requestTask == null) {
-                        requestTask = new ConcurrentTask<IRandomAccessStream>() {
+                    if (requestTask == null)
+                    {
+                        requestTask = new ConcurrentTask<IRandomAccessStream>()
+                        {
                             Task = GetStreamFromCacheOrNetAsync(url, options)
                         };
 
-                        lock (_concurrencyLock) {
-                            if (_concurrentTasks.ContainsKey(urlCode)) {
+                        lock (_concurrencyLock)
+                        {
+                            if (_concurrentTasks.ContainsKey(urlCode))
+                            {
                                 _concurrentTasks.Remove(urlCode);
                             }
                             _concurrentTasks.Add(urlCode, requestTask);
                         }
                     }
-                    try {
+                    try
+                    {
                         randomStream = await requestTask.Task.ConfigureAwait(false);
-                    } catch (Exception ex) {
-                        lock (_concurrencyLock) {
-                            if (_concurrentTasks.ContainsKey(urlCode)) {
+                    }
+                    catch (Exception ex)
+                    {
+                        lock (_concurrencyLock)
+                        {
+                            if (_concurrentTasks.ContainsKey(urlCode))
+                            {
                                 _concurrentTasks.Remove(urlCode);
                             }
                         }
                         System.Diagnostics.Debug.WriteLine(ex.Message);
                     }
-                    finally {
-                        lock (_concurrencyLock) {
-                            if (_concurrentTasks.ContainsKey(urlCode)) {
+                    finally
+                    {
+                        lock (_concurrencyLock)
+                        {
+                            if (_concurrentTasks.ContainsKey(urlCode))
+                            {
                                 _concurrentTasks.Remove(urlCode);
                             }
                         }
@@ -110,45 +139,61 @@ namespace Xuan.UWP.Framework.ImageLib {
             return randomStream;
         }
 
-        public async Task<bool> CacheImageAsync(StorageFile file, DisplayImageOptions options, CancellationToken cancellationToken) {
+        public async Task<bool> CacheImageAsync(StorageFile file, DisplayImageOptions options, CancellationToken cancellationToken)
+        {
             CheckConfig();
             bool result = false;
             ConcurrentTask<bool> requestTask = null;
             int urlCode = file.Path.GetHashCode();
-            lock (_concurrencyLock) {
-                if (_concurrentCacheTasks.ContainsKey(urlCode)) {
+            lock (_concurrencyLock)
+            {
+                if (_concurrentCacheTasks.ContainsKey(urlCode))
+                {
                     requestTask = _concurrentCacheTasks[urlCode];
                 }
             }
-            if (requestTask != null) {
+            if (requestTask != null)
+            {
                 await requestTask.Task.ConfigureAwait(false);
                 requestTask = null;
             }
-            if (requestTask == null) {
-                requestTask = new ConcurrentTask<bool>() {
+            if (requestTask == null)
+            {
+                requestTask = new ConcurrentTask<bool>()
+                {
                     Task = SaveCacheAsync(file)
                 };
 
-                lock (_concurrencyLock) {
-                    if (_concurrentCacheTasks.ContainsKey(urlCode)) {
+                lock (_concurrencyLock)
+                {
+                    if (_concurrentCacheTasks.ContainsKey(urlCode))
+                    {
                         _concurrentCacheTasks.Remove(urlCode);
                     }
                     _concurrentCacheTasks.Add(urlCode, requestTask);
                 }
             }
-            try {
+            try
+            {
                 result = await requestTask.Task.ConfigureAwait(false);
-            } catch (Exception ex) {
-                lock (_concurrencyLock) {
-                    if (_concurrentCacheTasks.ContainsKey(urlCode)) {
+            }
+            catch (Exception ex)
+            {
+                lock (_concurrencyLock)
+                {
+                    if (_concurrentCacheTasks.ContainsKey(urlCode))
+                    {
                         _concurrentCacheTasks.Remove(urlCode);
                     }
                 }
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-            finally {
-                lock (_concurrencyLock) {
-                    if (_concurrentCacheTasks.ContainsKey(urlCode)) {
+            finally
+            {
+                lock (_concurrencyLock)
+                {
+                    if (_concurrentCacheTasks.ContainsKey(urlCode))
+                    {
                         _concurrentCacheTasks.Remove(urlCode);
                     }
                 }
@@ -156,35 +201,47 @@ namespace Xuan.UWP.Framework.ImageLib {
             return result;
         }
 
-        public async Task<StorageFile> GetStorageFileFromCache(string url) {
-            try {
-                if (await _config.StorageCache.IsCacheExists(url)) {
+        public async Task<StorageFile> GetStorageFileFromCache(string url)
+        {
+            try
+            {
+                if (await _config.StorageCache.IsCacheExists(url))
+                {
                     return await _config.StorageCache.GetFileAsync(url);
                 }
                 return null;
-            } catch {
+            }
+            catch
+            {
                 throw new Exception("LoadImageStreamFromCache error");
             }
         }
 
-        protected virtual void CheckConfig() {
-            if (_config == null) {
+        protected virtual void CheckConfig()
+        {
+            if (_config == null)
+            {
                 throw new InvalidOperationException("ImageLoader configuration was not setted, please Initialize ImageLoader instance with  ImageLoaderConfiguration");
             }
         }
 
-        protected virtual async Task<IRandomAccessStream> GetStreamFromUriAsync(Uri uri, CancellationToken cancellationToken) {
-            switch (uri.Scheme) {
+        protected virtual async Task<IRandomAccessStream> GetStreamFromUriAsync(Uri uri, CancellationToken cancellationToken)
+        {
+            switch (uri.Scheme)
+            {
                 case "ms-appx":
-                case "ms-appdata": {
+                case "ms-appdata":
+                    {
                         var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
                         return await file.OpenAsync(FileAccessMode.Read).AsTask(cancellationToken).ConfigureAwait(false);
                     }
-                case "ms-resource": {
+                case "ms-resource":
+                    {
                         var rm = ResourceManager.Current;
                         var context = ResourceContext.GetForCurrentView();
                         var candidate = rm.MainResourceMap.GetValue(uri.LocalPath, context);
-                        if (candidate != null && candidate.IsMatch) {
+                        if (candidate != null && candidate.IsMatch)
+                        {
                             var file = await candidate.GetValueAsFileAsync();
                             return await file.OpenAsync(FileAccessMode.Read).AsTask(cancellationToken).ConfigureAwait(false);
                         }
@@ -195,57 +252,76 @@ namespace Xuan.UWP.Framework.ImageLib {
                 //        var file = await StorageFile.GetFileFromPathAsync(uri.LocalPath);
                 //        return await file.OpenAsync(FileAccessMode.Read).AsTask(cancellationToken).ConfigureAwait(false);
                 //    }
-                default: {
+                default:
+                    {
                         return null;
                     }
             }
         }
-        protected virtual async Task<IRandomAccessStream> GetStreamFromCacheOrNetAsync(string url, DisplayImageOptions options) {
+        protected virtual async Task<IRandomAccessStream> GetStreamFromCacheOrNetAsync(string url, DisplayImageOptions options)
+        {
             IRandomAccessStream randomStream = null;
             randomStream = await GetStreamFromCacheAsync(url).ConfigureAwait(false);
-            if (randomStream == null) {
+            if (randomStream == null)
+            {
                 randomStream = await GetStreamFromNetAsync(url).ConfigureAwait(false);
-                if (options.CacheOnStorage && randomStream != null && randomStream.Size > 0) {
+                if (options.CacheOnStorage && randomStream != null && randomStream.Size > 0)
+                {
                     await _config.StorageCache.SaveAsync(url, randomStream).ConfigureAwait(false);
                 }
             }
             return randomStream;
         }
-        protected virtual async Task<IRandomAccessStream> GetStreamFromCacheAsync(string url) {
-            try {
-                if (await _config.StorageCache.IsCacheExists(url)) {
+        protected virtual async Task<IRandomAccessStream> GetStreamFromCacheAsync(string url)
+        {
+            try
+            {
+                if (await _config.StorageCache.IsCacheExists(url))
+                {
                     return await _config.StorageCache.GetAsync(url);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 throw e;
             }
             return null;
         }
 
-        protected virtual async Task<bool> SaveCacheAsync(StorageFile file) {
+        protected virtual async Task<bool> SaveCacheAsync(StorageFile file)
+        {
             bool result = false;
-            try {
-                if (!await _config.StorageCache.IsCacheExists(file.Path)) {
+            try
+            {
+                if (!await _config.StorageCache.IsCacheExists(file.Path))
+                {
                     return await _config.StorageCache.SaveAsync(file);
                 }
-                else {
+                else
+                {
                     result = true;
                 }
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 throw e;
             }
             return result;
         }
-        protected virtual async Task<IRandomAccessStream> GetStreamFromNetAsync(string url) {
+        protected virtual async Task<IRandomAccessStream> GetStreamFromNetAsync(string url)
+        {
             IRandomAccessStream randomStream = null;
-            using (var engine = new HttpEngine()) {
+            using (var engine = new HttpEngine())
+            {
                 var request = new RequestMessage.Builder()
                     .Method("GET")
                     .Url(url)
                     .Build();
-                using (var response = await engine.SendRequestAsync(request).ConfigureAwait(false)) {
-                    if (response != null) {
+                using (var response = await engine.SendRequestAsync(request).ConfigureAwait(false))
+                {
+                    if (response != null)
+                    {
                         randomStream = new InMemoryRandomAccessStream();
                         await response.Content.WriteToStreamAsync(randomStream).AsTask().ConfigureAwait(false);
                         randomStream.Seek(0);

@@ -10,11 +10,13 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
-namespace Xuan.UWP.Framework.Controls {
+namespace Xuan.UWP.Framework.Controls
+{
     [TemplatePart(Name = RichTextControl.SCROLLVIEWER, Type = typeof(ScrollViewer))]
     [TemplatePart(Name = RichTextControl.RICHTEXTBLOCK, Type = typeof(RichTextBlock))]
 
-    public abstract class RichTextControl : Control {
+    public abstract class RichTextControl : Control
+    {
         TaskCompletionSource<object> taskCompletionSource = new TaskCompletionSource<object>();
 
         private const string SCROLLVIEWER = "TC_Scroll";
@@ -24,11 +26,13 @@ namespace Xuan.UWP.Framework.Controls {
         private RichTextBlock richTextBlock;
 
 
-        public RichTextControl() {
+        public RichTextControl()
+        {
             this.DefaultStyleKey = typeof(RichTextControl);
         }
 
-        protected override void OnApplyTemplate() {
+        protected override void OnApplyTemplate()
+        {
             base.OnApplyTemplate();
             scroll = GetTemplateChild(SCROLLVIEWER) as ScrollViewer;
             richTextBlock = GetTemplateChild(RICHTEXTBLOCK) as RichTextBlock;
@@ -36,7 +40,8 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
 
-        public DataTemplate HeaderTemplate {
+        public DataTemplate HeaderTemplate
+        {
             get { return (DataTemplate)GetValue(HeaderTemplateProperty); }
             set { SetValue(HeaderTemplateProperty, value); }
         }
@@ -44,14 +49,16 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty HeaderTemplateProperty =
           DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(RichTextControl), new PropertyMetadata(null));
 
-        public DataTemplate FootTemplate {
+        public DataTemplate FootTemplate
+        {
             get { return (DataTemplate)GetValue(FootTemplateProperty); }
             set { SetValue(FootTemplateProperty, value); }
         }
 
         public static readonly DependencyProperty FootTemplateProperty =
           DependencyProperty.Register(nameof(FootTemplate), typeof(DataTemplate), typeof(RichTextControl), new PropertyMetadata(null));
-        public UIElement Header {
+        public UIElement Header
+        {
             get { return (UIElement)GetValue(HeaderProperty); }
             set { SetValue(HeaderProperty, value); }
         }
@@ -59,7 +66,8 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register("Header", typeof(UIElement), typeof(RichTextControl), new PropertyMetadata(null));
 
-        public UIElement Footer {
+        public UIElement Footer
+        {
             get { return (UIElement)GetValue(FooterProperty); }
             set { SetValue(FooterProperty, value); }
         }
@@ -67,7 +75,8 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty FooterProperty =
             DependencyProperty.Register("Footer", typeof(UIElement), typeof(RichTextControl), new PropertyMetadata(null));
 
-        public Brush ContentBackground {
+        public Brush ContentBackground
+        {
             get { return (Brush)GetValue(ContentBackgroundProperty); }
             set { SetValue(ContentBackgroundProperty, value); }
         }
@@ -75,7 +84,8 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty ContentBackgroundProperty =
             DependencyProperty.Register("ContentBackground", typeof(Brush), typeof(RichTextControl), new PropertyMetadata(null));
 
-        public double ContentMaxWidth {
+        public double ContentMaxWidth
+        {
             get { return (double)GetValue(ContentMaxWidthProperty); }
             set { SetValue(ContentMaxWidthProperty, value); }
         }
@@ -83,7 +93,8 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty ContentMaxWidthProperty =
             DependencyProperty.Register("ContentMaxWidth", typeof(double), typeof(RichTextControl), new PropertyMetadata(900d));
 
-        public int LineHeight {
+        public int LineHeight
+        {
             get { return (int)GetValue(LineHeightProperty); }
             set { SetValue(LineHeightProperty, value); }
         }
@@ -92,14 +103,16 @@ namespace Xuan.UWP.Framework.Controls {
             DependencyProperty.Register("LineHeight", typeof(int), typeof(RichTextControl), new PropertyMetadata(20));
 
 
-        public string Text {
+        public string Text
+        {
             get { return (string)GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
 
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(RichTextControl), new PropertyMetadata(String.Empty, OnTextPropertyChanged));
-        private static void OnTextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnTextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
             var sender = d as RichTextControl;
             var value = e.NewValue;
             if (value == null)
@@ -107,14 +120,17 @@ namespace Xuan.UWP.Framework.Controls {
             sender.OnTextPropertyChanged(e.NewValue.ToString());
         }
 
-        private async void OnTextPropertyChanged(string value) {
+        private async void OnTextPropertyChanged(string value)
+        {
             if (!taskCompletionSource.Task.IsCompleted)
                 await taskCompletionSource.Task;
             ChangeView(0, 0, 1);
-            if (richTextBlock != null) {
+            if (richTextBlock != null)
+            {
                 richTextBlock.Blocks.Clear();
                 var paragraphs = CreateParagraph(value);
-                foreach (var paragraph in paragraphs) {
+                foreach (var paragraph in paragraphs)
+                {
                     richTextBlock.Blocks.Add(paragraph);
                 }
             }
@@ -122,7 +138,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         public abstract IList<Paragraph> CreateParagraph(string text);
 
-        public void ChangeView(Double? horizontalOffset, Double? verticalOffset, Single? zoomFactor, Boolean disableAnimation = true) {
+        public void ChangeView(Double? horizontalOffset, Double? verticalOffset, Single? zoomFactor, Boolean disableAnimation = true)
+        {
             scroll?.ChangeView(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
         }
     }

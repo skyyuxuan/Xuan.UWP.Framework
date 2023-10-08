@@ -10,7 +10,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
-namespace Xuan.UWP.Framework.Controls {
+namespace Xuan.UWP.Framework.Controls
+{
     [TemplatePart(Name = Rating.FILLEDCLIPELEMENT, Type = typeof(Border))]
     [TemplatePart(Name = Rating.FILLEDGRIDELEMENT, Type = typeof(Grid))]
     [TemplatePart(Name = Rating.UNFILLEDGRIDELEMENT, Type = typeof(Grid))]
@@ -18,7 +19,8 @@ namespace Xuan.UWP.Framework.Controls {
     [TemplatePart(Name = Rating.DRAGTEXTBLOCKELEMENT, Type = typeof(TextBlock))]
     [TemplateVisualState(Name = Rating.DRAGHELPERCOLLAPSED, GroupName = Rating.DRAGHELPERSTATES)]
     [TemplateVisualState(Name = Rating.DRAGHELPERVISIBLE, GroupName = Rating.DRAGHELPERSTATES)]
-    public class Rating : Control {
+    public class Rating : Control
+    {
         private const string FILLEDCLIPELEMENT = "FilledClipElement";
         private const string FILLEDGRIDELEMENT = "FilledGridElement";
         private const string UNFILLEDGRIDELEMENT = "UnfilledGridElement";
@@ -39,7 +41,8 @@ namespace Xuan.UWP.Framework.Controls {
         private List<RatingItem> _unfilledItemCollection = new List<RatingItem>();
         public event EventHandler ValueChanged;
 
-        public Rating() {
+        public Rating()
+        {
             DefaultStyleKey = typeof(Rating);
             SizeChanged += OnSizeChanged;
             ManipulationMode = Windows.UI.Xaml.Input.ManipulationModes.TranslateX;
@@ -51,9 +54,11 @@ namespace Xuan.UWP.Framework.Controls {
             UpdateClippingMask();
         }
 
-        protected override void OnTapped(TappedRoutedEventArgs e) {
+        protected override void OnTapped(TappedRoutedEventArgs e)
+        {
             base.OnTapped(e);
-            if (!ReadOnly) {
+            if (!ReadOnly)
+            {
                 PerformValueCalculation(e.GetPosition(this), this);
                 UpdateDragHelper();
             }
@@ -61,31 +66,39 @@ namespace Xuan.UWP.Framework.Controls {
 
 
 
-        void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+        void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
             UpdateClippingMask();
         }
 
 
 
-        private void OnManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e) {
-            if (!ReadOnly) {
+        private void OnManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if (!ReadOnly)
+            {
                 PerformValueCalculation(e.Position, e.Container);
                 UpdateDragHelper();
-                if (ShowSelectionHelper) {
+                if (ShowSelectionHelper)
+                {
                     ChangeDragHelperVisibility(true);
                 }
             }
         }
 
-        private void OnManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e) {
-            if (!ReadOnly) {
+        private void OnManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            if (!ReadOnly)
+            {
                 PerformValueCalculation(e.Position, e.Container);
                 UpdateDragHelper();
             }
         }
 
-        private void OnManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e) {
-            if (!ReadOnly) {
+        private void OnManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {
+            if (!ReadOnly)
+            {
                 PerformValueCalculation(e.Position, e.Container);
             }
             ChangeDragHelperVisibility(false);
@@ -94,19 +107,22 @@ namespace Xuan.UWP.Framework.Controls {
 
 
 
-        protected override void OnApplyTemplate() {
+        protected override void OnApplyTemplate()
+        {
             _filledClipElement = GetTemplateChild(FILLEDCLIPELEMENT) as Border;
             _filledGridElement = GetTemplateChild(FILLEDGRIDELEMENT) as Grid;
             _unfilledGridElement = GetTemplateChild(UNFILLEDGRIDELEMENT) as Grid;
             _dragBorderElement = GetTemplateChild(DRAGBORDERELEMENT) as Border;
             _dragTextBlockElement = GetTemplateChild(DRAGTEXTBLOCKELEMENT) as TextBlock;
 
-            if (_filledClipElement != null) {
+            if (_filledClipElement != null)
+            {
 
                 _filledClipElement.Clip = _clippingMask;
             }
 
-            if (_dragBorderElement != null) {
+            if (_dragBorderElement != null)
+            {
                 _dragBorderElement.RenderTransform = new TranslateTransform();
             }
             VisualStateManager.GoToState(this, "Collapsed", false);
@@ -116,67 +132,84 @@ namespace Xuan.UWP.Framework.Controls {
         #region Grid Modifiers and Helpers
 
 
-        private void ChangeDragHelperVisibility(bool isVisible) {
-            if (_dragBorderElement == null) {
+        private void ChangeDragHelperVisibility(bool isVisible)
+        {
+            if (_dragBorderElement == null)
+            {
                 return;
             }
 
-            if (isVisible) {
+            if (isVisible)
+            {
                 VisualStateManager.GoToState(this, DRAGHELPERVISIBLE, true);
             }
-            else {
+            else
+            {
                 VisualStateManager.GoToState(this, DRAGHELPERCOLLAPSED, true);
             }
         }
 
 
-        private void UpdateDragHelper() {
+        private void UpdateDragHelper()
+        {
 
-            if (RatingItemCount == 0) {
+            if (RatingItemCount == 0)
+            {
                 return;
             }
 
             string textBlockFormatString;
-            if (AllowHalfItemIncrement) {
+            if (AllowHalfItemIncrement)
+            {
                 textBlockFormatString = "F1";
             }
-            else {
+            else
+            {
                 textBlockFormatString = "F0";
             }
 
-            if (_dragTextBlockElement != null) {
+            if (_dragTextBlockElement != null)
+            {
                 _dragTextBlockElement.Text = Value.ToString(textBlockFormatString, CultureInfo.CurrentCulture);
             }
 
-            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal) {
-                if (_dragBorderElement != null) {
+            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal)
+            {
+                if (_dragBorderElement != null)
+                {
                     double distanceToCenterOfDragBorder = (_dragBorderElement.ActualWidth) / 2;
                     double distanceToCenterOfRatingItem = (_filledItemCollection[0].ActualWidth) / 2;
 
                     TranslateTransform t = (TranslateTransform)_dragBorderElement.RenderTransform;
 
-                    if (!AllowHalfItemIncrement && !AllowSelectingZero) {
+                    if (!AllowHalfItemIncrement && !AllowSelectingZero)
+                    {
                         t.X = (Value / RatingItemCount) * ActualWidth - distanceToCenterOfDragBorder - distanceToCenterOfRatingItem;
                     }
-                    else {
+                    else
+                    {
                         t.X = (Value / RatingItemCount) * ActualWidth - distanceToCenterOfDragBorder;
                     }
 
                     t.Y = -(ActualHeight / 2 + 15);
                 }
             }
-            else {
-                if (_dragBorderElement != null) {
+            else
+            {
+                if (_dragBorderElement != null)
+                {
                     double distanceToCenterOfDragBorder = (_dragBorderElement.ActualHeight) / 2;
                     double distanceToCenterOfRatingItem = (_filledItemCollection[0].ActualHeight) / 2;
 
 
                     TranslateTransform t = (TranslateTransform)_dragBorderElement.RenderTransform;
 
-                    if (!AllowHalfItemIncrement && !AllowSelectingZero) {
+                    if (!AllowHalfItemIncrement && !AllowSelectingZero)
+                    {
                         t.Y = (Value / RatingItemCount) * ActualHeight - distanceToCenterOfDragBorder - distanceToCenterOfRatingItem;
                     }
-                    else {
+                    else
+                    {
                         t.Y = (Value / RatingItemCount) * ActualHeight - distanceToCenterOfDragBorder;
                     }
 
@@ -186,25 +219,30 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
 
-        private void PerformValueCalculation(Point location, UIElement locationRelativeSource) {
+        private void PerformValueCalculation(Point location, UIElement locationRelativeSource)
+        {
             GeneralTransform gt = locationRelativeSource.TransformToVisual(this);
             location = gt.TransformPoint(location);
 
             int numberOfPositions = _filledItemCollection.Count;
 
-            if (AllowHalfItemIncrement) {
+            if (AllowHalfItemIncrement)
+            {
                 numberOfPositions *= 2;
             }
 
             double newValue;
-            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal) {
+            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal)
+            {
                 newValue = Math.Ceiling(location.X / ActualWidth * numberOfPositions);
             }
-            else {
+            else
+            {
                 newValue = Math.Ceiling(location.Y / ActualHeight * numberOfPositions);
             }
 
-            if (!AllowSelectingZero && newValue <= 0) {
+            if (!AllowSelectingZero && newValue <= 0)
+            {
                 newValue = 1;
             }
 
@@ -212,14 +250,17 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
 
-        private void UpdateClippingMask() {
+        private void UpdateClippingMask()
+        {
             Rect newRect;
 
-            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal) {
+            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal)
+            {
                 double widthMinusBorder = ActualWidth - BorderThickness.Right - BorderThickness.Left;
                 newRect = new Rect(0, 0, widthMinusBorder * (Value / RatingItemCount), ActualHeight);
             }
-            else {
+            else
+            {
                 double heightMinusBorder = ActualHeight - BorderThickness.Top - BorderThickness.Bottom;
                 newRect = new Rect(0, 0, ActualWidth, heightMinusBorder * (Value / RatingItemCount));
             }
@@ -227,10 +268,12 @@ namespace Xuan.UWP.Framework.Controls {
             RectangleGeometry rGeo = _clippingMask;
 
 
-            if (rGeo != null) {
+            if (rGeo != null)
+            {
                 rGeo.Rect = newRect;
             }
-            else {
+            else
+            {
                 rGeo = new RectangleGeometry();
                 rGeo.Rect = newRect;
                 _clippingMask = rGeo;
@@ -238,66 +281,81 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
 
-        private static RatingItem BuildNewRatingItem(Style s) {
+        private static RatingItem BuildNewRatingItem(Style s)
+        {
             RatingItem ri = new RatingItem();
-            if (s != null) {
+            if (s != null)
+            {
                 ri.Style = s;
             }
             return ri;
         }
 
 
-        private void AdjustNumberOfRatingItems() {
-            while (_filledItemCollection.Count > RatingItemCount) {
+        private void AdjustNumberOfRatingItems()
+        {
+            while (_filledItemCollection.Count > RatingItemCount)
+            {
                 _filledItemCollection.RemoveAt(0);
             }
 
-            while (_unfilledItemCollection.Count > RatingItemCount) {
+            while (_unfilledItemCollection.Count > RatingItemCount)
+            {
                 _unfilledItemCollection.RemoveAt(0);
             }
 
-            while (_filledItemCollection.Count < RatingItemCount) {
+            while (_filledItemCollection.Count < RatingItemCount)
+            {
                 _filledItemCollection.Add(BuildNewRatingItem(FilledItemStyle));
             }
 
-            while (_unfilledItemCollection.Count < RatingItemCount) {
+            while (_unfilledItemCollection.Count < RatingItemCount)
+            {
                 _unfilledItemCollection.Add(BuildNewRatingItem(UnfilledItemStyle));
             }
         }
 
 
-        private void SynchronizeGrid(Grid grid, IList<RatingItem> ratingItemList) {
-            if (grid == null) {
+        private void SynchronizeGrid(Grid grid, IList<RatingItem> ratingItemList)
+        {
+            if (grid == null)
+            {
                 return;
             }
 
             grid.RowDefinitions.Clear();
             grid.ColumnDefinitions.Clear();
 
-            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal) {
+            if (Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal)
+            {
 
-                while (grid.ColumnDefinitions.Count < ratingItemList.Count) {
+                while (grid.ColumnDefinitions.Count < ratingItemList.Count)
+                {
                     ColumnDefinition cD = new ColumnDefinition();
                     cD.Width = new GridLength(1, GridUnitType.Star);
                     grid.ColumnDefinitions.Add(cD);
                 }
 
                 grid.Children.Clear();
-                for (int i = 0; i < ratingItemList.Count; i++) {
+                for (int i = 0; i < ratingItemList.Count; i++)
+                {
                     grid.Children.Add(ratingItemList[i]);
                     Grid.SetColumn(ratingItemList[i], i);
                     Grid.SetRow(ratingItemList[i], 0);
                 }
             }
-            else {
-                while (grid.RowDefinitions.Count < ratingItemList.Count) {
+            else
+            {
+                while (grid.RowDefinitions.Count < ratingItemList.Count)
+                {
                     RowDefinition rD = new RowDefinition();
                     rD.Height = new GridLength(1, GridUnitType.Star);
                     grid.RowDefinitions.Add(rD);
                 }
 
                 grid.Children.Clear();
-                for (int i = 0; i < ratingItemList.Count; i++) {
+                for (int i = 0; i < ratingItemList.Count; i++)
+                {
                     grid.Children.Add(ratingItemList[i]);
                     Grid.SetRow(ratingItemList[i], i);
                     Grid.SetColumn(ratingItemList[i], 0);
@@ -307,7 +365,8 @@ namespace Xuan.UWP.Framework.Controls {
         }
 
 
-        private void SynchronizeGrids() {
+        private void SynchronizeGrids()
+        {
             SynchronizeGrid(_unfilledGridElement, _unfilledItemCollection);
             SynchronizeGrid(_filledGridElement, _filledItemCollection);
         }
@@ -316,7 +375,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public Style FilledItemStyle
 
-        public Style FilledItemStyle {
+        public Style FilledItemStyle
+        {
             get { return (Style)GetValue(FilledItemStyleProperty); }
             set { SetValue(FilledItemStyleProperty, value); }
         }
@@ -327,13 +387,16 @@ namespace Xuan.UWP.Framework.Controls {
             typeof(Style), typeof(Rating),
             new PropertyMetadata(null, OnFilledItemStyleChanged));
 
-        private static void OnFilledItemStyleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+        private static void OnFilledItemStyleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
             Rating source = (Rating)dependencyObject;
             source.OnFilledItemStyleChanged();
         }
 
-        private void OnFilledItemStyleChanged() {
-            foreach (RatingItem ri in _filledItemCollection) {
+        private void OnFilledItemStyleChanged()
+        {
+            foreach (RatingItem ri in _filledItemCollection)
+            {
                 ri.Style = FilledItemStyle;
             }
         }
@@ -341,7 +404,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public style UnfilledItemStyle
 
-        public Style UnfilledItemStyle {
+        public Style UnfilledItemStyle
+        {
             get { return (Style)GetValue(UnfilledItemStyleProperty); }
             set { SetValue(UnfilledItemStyleProperty, value); }
         }
@@ -351,13 +415,16 @@ namespace Xuan.UWP.Framework.Controls {
             DependencyProperty.Register("UnfilledItemStyle",
             typeof(Style), typeof(Rating),
             new PropertyMetadata(null, OnUnfilledItemStyleChanged));
-        private static void OnUnfilledItemStyleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+        private static void OnUnfilledItemStyleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
             Rating source = (Rating)dependencyObject;
             source.OnUnfilledItemStyleChanged();
         }
 
-        private void OnUnfilledItemStyleChanged() {
-            foreach (RatingItem ri in _unfilledItemCollection) {
+        private void OnUnfilledItemStyleChanged()
+        {
+            foreach (RatingItem ri in _unfilledItemCollection)
+            {
 
                 ri.Style = UnfilledItemStyle;
             }
@@ -365,7 +432,8 @@ namespace Xuan.UWP.Framework.Controls {
         #endregion
 
         #region public int RatingItemCount
-        public int RatingItemCount {
+        public int RatingItemCount
+        {
             get { return (int)GetValue(RatingItemCountProperty); }
             set { SetValue(RatingItemCountProperty, value); }
         }
@@ -378,13 +446,16 @@ namespace Xuan.UWP.Framework.Controls {
                 typeof(int), typeof(Rating),
                 new PropertyMetadata(5, OnRatingItemCountChanged));
 
-        private static void OnRatingItemCountChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+        private static void OnRatingItemCountChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
             Rating source = (Rating)dependencyObject;
             source.OnRatingItemCountChanged();
         }
 
-        private void OnRatingItemCountChanged() {
-            if (RatingItemCount <= 0) {
+        private void OnRatingItemCountChanged()
+        {
+            if (RatingItemCount <= 0)
+            {
                 RatingItemCount = 0;
             }
 
@@ -397,11 +468,14 @@ namespace Xuan.UWP.Framework.Controls {
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods",
             Justification = "Property traditionally named value")]
-        public double Value {
+        public double Value
+        {
             get { return (double)GetValue(ValueProperty); }
-            set {
+            set
+            {
                 SetValue(ValueProperty, value);
-                if (ValueChanged != null) {
+                if (ValueChanged != null)
+                {
                     ValueChanged(this, EventArgs.Empty);
                 }
             }
@@ -415,13 +489,16 @@ namespace Xuan.UWP.Framework.Controls {
                 typeof(double), typeof(Rating),
                 new PropertyMetadata(0.0, OnValueChanged));
 
-        private static void OnValueChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+        private static void OnValueChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
             Rating source = (Rating)dependencyObject;
             source.OnValueChanged();
         }
 
-        private void OnValueChanged() {
-            if (Value > RatingItemCount || Value < 0) {
+        private void OnValueChanged()
+        {
+            if (Value > RatingItemCount || Value < 0)
+            {
                 Value = Math.Max(0, Math.Min(RatingItemCount, Value));
             }
             UpdateClippingMask();
@@ -430,7 +507,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public boolean ReadOnly
 
-        public bool ReadOnly {
+        public bool ReadOnly
+        {
             get { return (bool)GetValue(ReadOnlyProperty); }
             set { SetValue(ReadOnlyProperty, value); }
         }
@@ -442,7 +520,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public boolean AllowHalfItemIncrement
 
-        public bool AllowHalfItemIncrement {
+        public bool AllowHalfItemIncrement
+        {
             get { return (bool)GetValue(AllowHalfItemIncrementProperty); }
             set { SetValue(AllowHalfItemIncrementProperty, value); }
         }
@@ -454,7 +533,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public boolean AllowSelectingZero
 
-        public bool AllowSelectingZero {
+        public bool AllowSelectingZero
+        {
             get { return (bool)GetValue(AllowSelectingZeroProperty); }
             set { SetValue(AllowSelectingZeroProperty, value); }
         }
@@ -466,7 +546,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public boolean ShowSelectionHelper
 
-        public bool ShowSelectionHelper {
+        public bool ShowSelectionHelper
+        {
             get { return (bool)GetValue(ShowSelectionHelperProperty); }
             set { SetValue(ShowSelectionHelperProperty, value); }
         }
@@ -478,7 +559,8 @@ namespace Xuan.UWP.Framework.Controls {
 
         #region public Orientation Orientation
 
-        public Orientation Orientation {
+        public Orientation Orientation
+        {
             get { return (Orientation)GetValue(OrientationProperty); }
             set { SetValue(OrientationProperty, value); }
         }
@@ -487,12 +569,14 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty OrientationProperty =
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(Rating), new PropertyMetadata(Orientation.Horizontal, OnOrientationChanged));
 
-        private static void OnOrientationChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+        private static void OnOrientationChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
             Rating source = (Rating)dependencyObject;
             source.OnOrientationChanged();
         }
 
-        private void OnOrientationChanged() {
+        private void OnOrientationChanged()
+        {
             SynchronizeGrids();
             UpdateClippingMask();
         }

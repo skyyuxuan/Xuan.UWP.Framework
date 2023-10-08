@@ -12,11 +12,13 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
 
-namespace Xuan.UWP.Framework.Controls {
+namespace Xuan.UWP.Framework.Controls
+{
     [TemplatePart(Name = LAYOUTROOT, Type = typeof(Grid))]
     [TemplatePart(Name = MAINPAHTMENU, Type = typeof(PathMenuItem))]
 
-    public sealed class PathMenu : ItemsControl {
+    public sealed class PathMenu : ItemsControl
+    {
         private const string LAYOUTROOT = "LayoutRoot";
         private const string MAINPAHTMENU = "MainPathMenu";
 
@@ -29,40 +31,52 @@ namespace Xuan.UWP.Framework.Controls {
         private int _itemCount = -1;
         private float _duration = 0.5f;
 
-        public PathMenu() {
+        public PathMenu()
+        {
             this.DefaultStyleKey = typeof(PathMenu);
         }
-        protected override bool IsItemItsOwnContainerOverride(object item) {
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
             return item is PathMenuItem;
         }
 
-        protected override DependencyObject GetContainerForItemOverride() {
+        protected override DependencyObject GetContainerForItemOverride()
+        {
             return new PathMenuItem();
         }
 
-        protected override Size MeasureOverride(Size availableSize) {
+        protected override Size MeasureOverride(Size availableSize)
+        {
             return base.MeasureOverride(availableSize);
         }
-        protected override void OnApplyTemplate() {
+        protected override void OnApplyTemplate()
+        {
             base.OnApplyTemplate();
-            if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled) {
+            if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
                 this.LostFocus += OnLostFocus;
-                if (_layout == null) {
+                if (_layout == null)
+                {
                     _layout = this.GetTemplateChild(LAYOUTROOT) as Grid;
                 }
-                if (_mainPathMenu == null) {
+                if (_mainPathMenu == null)
+                {
                     _mainPathMenu = this.GetTemplateChild(MAINPAHTMENU) as PathMenuItem;
                 }
-                if (_mainPathMenu != null) {
+                if (_mainPathMenu != null)
+                {
                     _mainPathMenu.RenderTransform = new CompositeTransform();
                     _mainPathMenu.RenderTransformOrigin = new Point(0.5, 0.5);
                     _mainPathMenu.Click -= OnPathMenuClick;
                     _mainPathMenu.Click += OnPathMenuClick;
                 }
-                if (_layout != null) {
-                    foreach (var item in Items) {
+                if (_layout != null)
+                {
+                    foreach (var item in Items)
+                    {
                         var menuItem = item as PathMenuItem;
-                        if (menuItem != null) {
+                        if (menuItem != null)
+                        {
                             menuItem.RenderTransform = new CompositeTransform();
                             menuItem.Opacity = 0;
                             _layout.Children.Insert(0, menuItem);
@@ -75,14 +89,17 @@ namespace Xuan.UWP.Framework.Controls {
             }
         }
 
-        private void OnLostFocus(object sender, RoutedEventArgs e) {
+        private void OnLostFocus(object sender, RoutedEventArgs e)
+        {
             _isAnimating = false;
-            if (IsOpen) {
+            if (IsOpen)
+            {
                 IsOpen = false;
             }
         }
 
-        private void OnPathMenuClick(object sender, RoutedEventArgs e) {
+        private void OnPathMenuClick(object sender, RoutedEventArgs e)
+        {
             if (_isAnimating)
                 return;
             IsOpen = !IsOpen;
@@ -94,22 +111,26 @@ namespace Xuan.UWP.Framework.Controls {
         //    set { SetValue(DataProperty, value); }
         //}
 
-        public int OrignAngle {
+        public int OrignAngle
+        {
             get { return (int)GetValue(OrignAngleProperty); }
             set { SetValue(OrignAngleProperty, value); }
         }
 
-        public PathMenuType MenuMode {
+        public PathMenuType MenuMode
+        {
             get { return (PathMenuType)GetValue(MenuModeProperty); }
             set { SetValue(MenuModeProperty, value); }
         }
 
-        public double Radius {
+        public double Radius
+        {
             get { return (double)GetValue(RadiusProperty); }
             set { SetValue(RadiusProperty, value); }
         }
 
-        public bool IsOpen {
+        public bool IsOpen
+        {
             get { return (bool)GetValue(IsOpenProperty); }
             set { SetValue(IsOpenProperty, value); }
         }
@@ -121,8 +142,10 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty MenuModeProperty =
                     DependencyProperty.Register("MenuMode", typeof(PathMenuType), typeof(PathMenu), new PropertyMetadata(PathMenuType.Right, (d, e) => ((PathMenu)d).OnMenuModePropertyChanged(d, e)));
 
-        private void OnMenuModePropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (e.NewValue != e.OldValue) {
+        private void OnMenuModePropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
                 InitLayout();
             }
         }
@@ -130,34 +153,42 @@ namespace Xuan.UWP.Framework.Controls {
         public static readonly DependencyProperty OrignAngleProperty =
         DependencyProperty.Register("OrignAngle", typeof(int), typeof(PathMenu), new PropertyMetadata(90, (d, e) => ((PathMenu)d).OnOrignAnglePropertyChanged(d, e)));
 
-        private void OnOrignAnglePropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (e.NewValue != e.OldValue) {
+        private void OnOrignAnglePropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
                 InitLayout();
             }
         }
         public static readonly DependencyProperty RadiusProperty =
               DependencyProperty.Register("Radius", typeof(double), typeof(PathMenu), new PropertyMetadata(150d, (d, e) => ((PathMenu)d).OnRadiusPropertyChanged(d, e)));
-        private void OnRadiusPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (e.NewValue != e.OldValue) {
+        private void OnRadiusPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
                 InitLayout();
             }
         }
 
         public static readonly DependencyProperty IsOpenProperty =
               DependencyProperty.Register("IsOpen", typeof(bool), typeof(PathMenu), new PropertyMetadata(false, (d, e) => ((PathMenu)d).OnIsOpenPropertyChanged(d, e)));
-        private void OnIsOpenPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (e.NewValue != e.OldValue) {
+        private void OnIsOpenPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
                 DoAnimation();
             }
         }
-        private void InitLayout() {
+        private void InitLayout()
+        {
             if (_layout == null)
                 return;
             _itemCount = _layout.Children.Count();
             int dx = 1;
             int dy = 1;
             bool isTwoDirections = true;
-            switch (MenuMode) {
+            switch (MenuMode)
+            {
                 case PathMenuType.UpAndRight:
                     dx = 1;
                     dy = -1;
@@ -197,17 +228,22 @@ namespace Xuan.UWP.Framework.Controls {
                     break;
             }
             double menuItemSpacing = 0;
-            if (_itemCount - 1 > 0) {
+            if (_itemCount - 1 > 0)
+            {
                 menuItemSpacing = (double)OrignAngle / (_itemCount - 1);
             }
-            for (int i = 0; i < _itemCount; i++) {
+            for (int i = 0; i < _itemCount; i++)
+            {
                 PathMenuItem pathMenuItem = _layout.Children[i] as PathMenuItem;
-                if (pathMenuItem != null) {
-                    if (isTwoDirections) {
+                if (pathMenuItem != null)
+                {
+                    if (isTwoDirections)
+                    {
                         pathMenuItem.X = dx * Radius * Math.Sin(i * Math.PI * menuItemSpacing / 180);
                         pathMenuItem.Y = dy * Radius * Math.Cos(i * Math.PI * menuItemSpacing / 180);
                     }
-                    else {
+                    else
+                    {
                         var j = i + 1;
                         pathMenuItem.X = dx * j * Radius;
                         pathMenuItem.Y = dy * j * Radius;
@@ -220,16 +256,21 @@ namespace Xuan.UWP.Framework.Controls {
             }
 
         }
-        public void DoAnimation() {
+        public void DoAnimation()
+        {
             if (_isAnimating)
                 return;
             _isAnimating = true;
-            if (IsOpen) {
-                if (_openStoryboard == null) {
+            if (IsOpen)
+            {
+                if (_openStoryboard == null)
+                {
                     _openStoryboard = new Storyboard();
-                    for (int i = 0; i < _itemCount; i++) {
+                    for (int i = 0; i < _itemCount; i++)
+                    {
                         PathMenuItem pathMenuItem = Items[i] as PathMenuItem;
-                        if (pathMenuItem != null) {
+                        if (pathMenuItem != null)
+                        {
                             double num = 50.0 / (double)_itemCount * (double)i / 100.0;
                             double num2 = 40.0 / (double)_itemCount * (double)i / 100.0;
                             pathMenuItem.RenderTransformOrigin = new Point(0.5, 0.5);
@@ -246,12 +287,16 @@ namespace Xuan.UWP.Framework.Controls {
                 }
                 _openStoryboard.Begin();
             }
-            else {
-                if (_hideStoryboard == null) {
+            else
+            {
+                if (_hideStoryboard == null)
+                {
                     _hideStoryboard = new Storyboard();
-                    for (int i = 0; i < _itemCount; i++) {
+                    for (int i = 0; i < _itemCount; i++)
+                    {
                         PathMenuItem pathMenuItem = Items[i] as PathMenuItem;
-                        if (pathMenuItem != null) {
+                        if (pathMenuItem != null)
+                        {
                             double num = 50.0 / (double)_itemCount * (double)i / 100.0;
                             double num2 = 40.0 / (double)_itemCount * (double)i / 100.0;
                             pathMenuItem.RenderTransformOrigin = new Point(0.5, 0.5);
@@ -271,11 +316,13 @@ namespace Xuan.UWP.Framework.Controls {
             }
         }
 
-        private void OnStoryboardCompleted(object sender, object e) {
+        private void OnStoryboardCompleted(object sender, object e)
+        {
             _isAnimating = false;
         }
 
-        private DoubleAnimationUsingKeyFrames GetOpenTimeline(UIElement element, double position, double delay, double delay2, float duration, bool isX = false) {
+        private DoubleAnimationUsingKeyFrames GetOpenTimeline(UIElement element, double position, double delay, double delay2, float duration, bool isX = false)
+        {
             DoubleAnimationUsingKeyFrames doubleAnimationUsingKeyFrames = new DoubleAnimationUsingKeyFrames();
             EasingDoubleKeyFrame easingDoubleKeyFrame = new EasingDoubleKeyFrame();
             easingDoubleKeyFrame.KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromSeconds(0.0));
@@ -325,7 +372,8 @@ namespace Xuan.UWP.Framework.Controls {
             return doubleAnimationUsingKeyFrames;
         }
 
-        private DoubleAnimationUsingKeyFrames GetHideTimeline(UIElement element, double position, double delay, double delay2, float duration, bool isX = false) {
+        private DoubleAnimationUsingKeyFrames GetHideTimeline(UIElement element, double position, double delay, double delay2, float duration, bool isX = false)
+        {
             DoubleAnimationUsingKeyFrames doubleAnimationUsingKeyFrames = new DoubleAnimationUsingKeyFrames();
             DiscreteDoubleKeyFrame discreteDoubleKeyFrame = new DiscreteDoubleKeyFrame();
             discreteDoubleKeyFrame.KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromSeconds((double)duration * (0.15 + delay)));
@@ -361,7 +409,8 @@ namespace Xuan.UWP.Framework.Controls {
             return doubleAnimationUsingKeyFrames;
         }
 
-        private DoubleAnimation GetRotateTimeline(UIElement element, double time1, double time2, float duration) {
+        private DoubleAnimation GetRotateTimeline(UIElement element, double time1, double time2, float duration)
+        {
             DoubleAnimation doubleAnimation = new DoubleAnimation();
             doubleAnimation.BeginTime = TimeSpan.FromSeconds(duration * (0.15 + time1));
             doubleAnimation.From = 0.0;
@@ -372,7 +421,8 @@ namespace Xuan.UWP.Framework.Controls {
             return doubleAnimation;
         }
 
-        private DoubleAnimation GetRotateAnimation(UIElement element, double from, double to) {
+        private DoubleAnimation GetRotateAnimation(UIElement element, double from, double to)
+        {
             DoubleAnimation doubleAnimation = new DoubleAnimation();
             doubleAnimation.From = from;
             doubleAnimation.To = to;
@@ -382,7 +432,8 @@ namespace Xuan.UWP.Framework.Controls {
             return doubleAnimation;
         }
 
-        private DoubleAnimation GetOpacityAnimation(UIElement element, double duration, double from, double to) {
+        private DoubleAnimation GetOpacityAnimation(UIElement element, double duration, double from, double to)
+        {
             var da = new DoubleAnimation();
             da.Duration = TimeSpan.FromSeconds(duration);
             da.From = from;
@@ -395,7 +446,8 @@ namespace Xuan.UWP.Framework.Controls {
 
     }
 
-    public enum PathMenuType {
+    public enum PathMenuType
+    {
         UpAndRight = 0,
         UpAndLeft = 1,
         DownAndRight = 2,

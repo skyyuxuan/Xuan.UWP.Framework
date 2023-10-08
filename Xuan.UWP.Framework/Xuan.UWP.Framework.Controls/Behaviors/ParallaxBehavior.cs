@@ -10,9 +10,12 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Xuan.UWP.Framework.Extensions;
 
-namespace Xuan.UWP.Framework.Behaviors {
-    public class ParallaxBehavior : Behavior<FrameworkElement> {
-        public UIElement ParallaxContent {
+namespace Xuan.UWP.Framework.Behaviors
+{
+    public class ParallaxBehavior : Behavior<FrameworkElement>
+    {
+        public UIElement ParallaxContent
+        {
             get { return (UIElement)GetValue(ParallaxContentProperty); }
             set { SetValue(ParallaxContentProperty, value); }
         }
@@ -23,7 +26,8 @@ namespace Xuan.UWP.Framework.Behaviors {
             typeof(ParallaxBehavior),
             new PropertyMetadata(null, OnParallaxContentChanged));
 
-        public double ParallaxMultiplier {
+        public double ParallaxMultiplier
+        {
             get { return (double)GetValue(ParallaxMultiplierProperty); }
             set { SetValue(ParallaxMultiplierProperty, value); }
         }
@@ -33,17 +37,20 @@ namespace Xuan.UWP.Framework.Behaviors {
          typeof(double),
          typeof(ParallaxBehavior),
          new PropertyMetadata(0.3d));
-        protected override void OnAttached() {
+        protected override void OnAttached()
+        {
             base.OnAttached();
             AssignParallax();
         }
 
-        private void AssignParallax() {
+        private void AssignParallax()
+        {
             if (ParallaxContent == null) return;
             if (AssociatedObject == null) return;
 
             var scroller = AssociatedObject as ScrollViewer;
-            if (scroller == null) {
+            if (scroller == null)
+            {
                 scroller = AssociatedObject.FindFirstElementInVisualTree<ScrollViewer>();
             }
             if (scroller == null) return;
@@ -61,7 +68,8 @@ namespace Xuan.UWP.Framework.Behaviors {
             textVisual.StartAnimation("Offset.Y", expression);
         }
 
-        private static void OnParallaxContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnParallaxContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
             var b = d as ParallaxBehavior;
             b.AssignParallax();
         }

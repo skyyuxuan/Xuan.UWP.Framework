@@ -7,11 +7,15 @@ using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 
-namespace Xuan.UWP.Framework.ImageLib.Compress {
-    public class ImageCompress {
-        public async void Compress(StorageFile origFile, CompressOptions options) {
+namespace Xuan.UWP.Framework.ImageLib.Compress
+{
+    public class ImageCompress
+    {
+        public async void Compress(StorageFile origFile, CompressOptions options)
+        {
 
-            using (var stream = await origFile.OpenReadAsync()) {
+            using (var stream = await origFile.OpenReadAsync())
+            {
                 var properties = await origFile.Properties.GetImagePropertiesAsync();
                 uint width = properties.Width;
                 uint height = properties.Height;
@@ -28,14 +32,17 @@ namespace Xuan.UWP.Framework.ImageLib.Compress {
                 BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream, propertySet);
                 be.SetPixelData(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, width, height, 96.0, 96.0, bytes);
 
-                if (width > options.MaxWidth || height > options.MaxHeight) {
+                if (width > options.MaxWidth || height > options.MaxHeight)
+                {
                     BitmapBounds bounds = new BitmapBounds();
-                    if (width > options.MaxWidth) {
+                    if (width > options.MaxWidth)
+                    {
                         bounds.Width = options.MaxWidth;
                         bounds.X = (width - options.MaxWidth) / 2;
                     }
                     else bounds.Width = width;
-                    if (height > options.MaxHeight) {
+                    if (height > options.MaxHeight)
+                    {
                         bounds.Height = options.MaxHeight;
                         bounds.Y = (height - options.MaxHeight) / 2;
                     }

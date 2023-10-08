@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Xuan.UWP.Framework.Utils;
 
-namespace Xuan.UWP.Framework.ImageLib.Cache {
-    public class SHA1CacheGenerator : ICacheGenerator {
-        public string GeneratorName(string name) {
+namespace Xuan.UWP.Framework.ImageLib.Cache
+{
+    public class SHA1CacheGenerator : ICacheGenerator
+    {
+        public string GeneratorName(string name)
+        {
             return SH1Util.ComputeHash(name);
         }
     }

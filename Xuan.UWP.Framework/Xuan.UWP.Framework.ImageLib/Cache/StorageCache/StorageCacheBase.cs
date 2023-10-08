@@ -7,8 +7,10 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Xuan.UWP.Framework.ImageLib.Cache;
 
-namespace Xuan.UWP.Framework.ImageLib.Cache {
-    public abstract class StorageCacheBase {
+namespace Xuan.UWP.Framework.ImageLib.Cache
+{
+    public abstract class StorageCacheBase
+    {
         protected readonly StorageFolder _baseFolder;
         protected virtual string _cacheFolderName { get; set; }
         protected virtual ICacheGenerator _cacheFileNameGenerator { get; set; }
@@ -20,21 +22,26 @@ namespace Xuan.UWP.Framework.ImageLib.Cache {
 
 
         protected StorageCacheBase(StorageFolder baseFolder, string cacheFolderName, ICacheGenerator cacheFileNameGenerator,
-            long cacheMaxLifetime) {
+            long cacheMaxLifetime)
+        {
 
-            if (baseFolder == null) {
+            if (baseFolder == null)
+            {
                 throw new ArgumentNullException("folder");
             }
 
-            if (string.IsNullOrEmpty(cacheFolderName)) {
+            if (string.IsNullOrEmpty(cacheFolderName))
+            {
                 throw new ArgumentException("cacheFolderName name could not be null or empty");
             }
 
-            if (cacheFolderName.StartsWith("\\")) {
+            if (cacheFolderName.StartsWith("\\"))
+            {
                 throw new ArgumentException("cacheFolderName name shouldn't starts with double slashes: \\");
             }
 
-            if (cacheFileNameGenerator == null) {
+            if (cacheFileNameGenerator == null)
+            {
                 throw new ArgumentNullException("cacheFileNameGenerator");
             }
 
@@ -43,16 +50,21 @@ namespace Xuan.UWP.Framework.ImageLib.Cache {
             _cacheFileNameGenerator = cacheFileNameGenerator;
         }
 
-        public virtual string GetFullPath(string name) {
+        public virtual string GetFullPath(string name)
+        {
             return System.IO.Path.Combine(_cacheFolderName, name);
         }
 
-        public virtual async Task<bool> IsCacheExists(string url) {
+        public virtual async Task<bool> IsCacheExists(string url)
+        {
             var fullFilePath = GetFullPath(_cacheFileNameGenerator.GeneratorName(url));
-            try {
+            try
+            {
                 await _baseFolder.GetFileAsync(fullFilePath);
                 return true;
-            } catch {
+            }
+            catch
+            {
                 return false;
             }
         }
